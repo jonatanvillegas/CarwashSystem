@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Areas\Home\Data\" />
     <Folder Include="Areas\Home\Models\" />
+    <Folder Include="Areas\Identity\Controllers\" />
     <Folder Include="Views\Dashboards\" />
   </ItemGroup>
 

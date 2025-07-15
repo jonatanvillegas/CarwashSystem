@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace Loyola_ERP.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
