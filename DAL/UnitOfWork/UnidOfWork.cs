@@ -1,4 +1,6 @@
 ﻿using DAL.Repositories.Repository.Academico;
+using Loyola_ERP.Data;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +11,23 @@ namespace DAL.UnitOfWork
 {
     public class UnidOfWork : IUnidOfWork
     {
-        public UnidOfWork()
+
+        protected readonly SchoolManagementContext _context;
+        private readonly IHttpContextAccessor _accessor;    
+
+
+        private  IAcademicoRepository _academicoRepository;
+
+
+        public UnidOfWork(SchoolManagementContext context)
         {
-            
+           _context = context;
         }
-        public IAcademicoRepository academico {  get; set; }
-        public IAcademicoRepository Academico { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IAcademicoRepository Academico => _academicoRepository ??= new AcademicoRepository(_context) ;
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+           _context.Dispose();
         }
     }
 }

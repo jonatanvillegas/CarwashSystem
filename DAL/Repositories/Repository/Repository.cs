@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Loyola_ERP.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,19 +10,30 @@ namespace DAL.Repositories.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        public List<IEnumerable<T>> GetAll()
+        protected readonly SchoolManagementContext _context;
+
+        public Repository(SchoolManagementContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<IEnumerable<T>> GetAll()
+        {
+            return await _context.Set<T>().ToListAsync();
         }
 
-        public T GetById(int id)
+        public ValueTask<T?> GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Set<T>().FindAsync(id);
         }
 
         public void RemoveId(int id)
         {
-            throw new NotImplementedException();
+            var entity = _context.Set<T>().Find(id);
+            if (entity != null)
+            {
+                _context.Set<T>().Remove(entity);
+            }
         }
+
     }
 }

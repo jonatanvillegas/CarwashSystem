@@ -9,6 +9,6 @@ namespace DAL.UnitOfWork
 {
     public interface IUnidOfWork:IDisposable
     {
-        IAcademicoRepository Academico { get;set;}
+        IAcademicoRepository Academico { get;}
     }
 }
