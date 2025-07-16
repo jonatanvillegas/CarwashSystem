@@ -1,4 +1,6 @@
 
+using DAL.ApplicationUser;
+using DAL.Repositories.Repository;
 using DAL.UnitOfWork;
 using Loyola_ERP.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -26,6 +28,7 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
     });
 
+builder.Services.AddScoped<IApplicationUser, ApplicationUser>();
 builder.Services.AddScoped<IUnidOfWork, UnidOfWork>(); 
 
 builder.Services.AddHttpContextAccessor();
