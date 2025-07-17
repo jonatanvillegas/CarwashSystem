@@ -5,10 +5,6 @@ VisualStudioVersion = 17.14.36212.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "Loyola_ERP\UI.csproj", "{846ECBAF-384D-45F9-A5A9-DD029B3E33EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{4244A7BB-6482-4E70-9A78-A2976A42C3D7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{B0426A6C-E6C5-4DC3-B10A-A7B25D52628C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,14 +15,6 @@ Global
 		{846ECBAF-384D-45F9-A5A9-DD029B3E33EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{846ECBAF-384D-45F9-A5A9-DD029B3E33EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{846ECBAF-384D-45F9-A5A9-DD029B3E33EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4244A7BB-6482-4E70-9A78-A2976A42C3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4244A7BB-6482-4E70-9A78-A2976A42C3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4244A7BB-6482-4E70-9A78-A2976A42C3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4244A7BB-6482-4E70-9A78-A2976A42C3D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0426A6C-E6C5-4DC3-B10A-A7B25D52628C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0426A6C-E6C5-4DC3-B10A-A7B25D52628C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0426A6C-E6C5-4DC3-B10A-A7B25D52628C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0426A6C-E6C5-4DC3-B10A-A7B25D52628C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,4 @@
 
-using DAL.ApplicationUser;
-using DAL.Repositories.Repository;
-using DAL.UnitOfWork;
 using Loyola_ERP.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddSqlServer<SchoolManagementContext>(connectionString);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -30,9 +26,6 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
     });
-
-builder.Services.AddScoped<IApplicationUser, ApplicationUser>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); 
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
@@ -74,7 +67,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Start}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

@@ -21,14 +21,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Academico\Data\" />
+    <Folder Include="Areas\Academico\Models\" />
     <Folder Include="Areas\Home\Data\" />
     <Folder Include="Areas\Home\Models\" />
     <Folder Include="Areas\Identity\Controllers\" />
+    <Folder Include="Areas\RH\Data\" />
+    <Folder Include="Areas\RH\Models\" />
+    <Folder Include="Models\Academico\Home\" />
     <Folder Include="Views\Dashboards\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
 
 </Project>
