@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Loyola_ERP.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -79,24 +80,31 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            // Adicionales para tabla de usuarios externos
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
+            [Display(Name = "Nombres")]
+            public string Nombres { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
+            [Required]
+            [Display(Name = "Apellidos")]
+            public string Apellidos { get; set; }
+
+            [Required]
+            [Display(Name = "Teléfono")]
+            [Phone]
+            public string Telefono { get; set; }
+
+            [Required]
+            [Display(Name = "Cédula")]
+            public string Cedula { get; set; }
+
+            [Required]
+            [Display(Name = "Dirección")]
+            public string Direccion { get; set; }
+
+            [Required]
+            [Display(Name = "Parentesco")]
+            public string Parentesco { get; set; }
         }
 
 
@@ -112,17 +120,19 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+               var passwordGenerada = "Test_123";
+               var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateAsync(user, passwordGenerada);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
@@ -131,18 +141,15 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    // Envía el correo con la contraseña y el enlace de confirmación
+                    await _emailSender.SendEmailAsync(Input.Email, "Registro de cuenta exitoso",
+                        $@"Hola, su cuenta fue creada exitosamente.<br>
+                    Su contraseña temporal es: <strong>{passwordGenerada}</strong><br><br>
+                    Por favor confirme su correo haciendo clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aquí</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    // Redirige al login después del registro
+                    return RedirectToPage("/Account/Login", new { area = "Identity" });
+
                 }
                 foreach (var error in result.Errors)
                 {

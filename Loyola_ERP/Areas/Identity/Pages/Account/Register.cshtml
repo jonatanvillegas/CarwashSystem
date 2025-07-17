@@ -2,63 +2,152 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
-
-<h1>@ViewData["Title"]</h1>
-
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
+@section Styles
+{
+    <style>
+        @@media (max-width: 932px) {
+            .items-actions {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.5rem;
             }
-        </section>
+
+            .auth-box {
+                padding: 15px;
+            }
+
+            .card-body {
+                padding: 1.875rem !important;
+            }
+        }
+    </style>
+}
+<div class="auth-box d-flex align-items-center">
+    <div class="container-md">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-7">
+                <div class="card rounded-4">
+                    <div class="row justify-content-between g-0">
+                        <div class="col-lg-12">
+                            <div class="card-body">
+                                <div class="auth-brand text-center mb-4">
+                                    <a href="/" class="logo-dark">
+                                        <img src="~/images/loyola/logos/logo.png" alt="dark logo" height="100">
+                                    </a>
+                                    <a href="/" class="logo-light">
+                                        <img src="~/images/loyola/logos/logo.png" alt="logo" height="100">
+                                    </a>
+                                    <h4 class="fw-bold mt-4">ERP Loyola</h4>
+                                    <p class="text-muted w-lg-75 mx-auto">Registrar una cuenta nueva.</p>
+                                </div>
+
+                                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                    <div class="row">
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="Input.Nombres" class="form-label"></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                    <i class="ti ti-user text-muted fs-xl"></i>
+                                                </span>
+                                                <input asp-for="Input.Nombres" class="form-control" placeholder="Ej: Juan Carlos" />
+                                            </div>
+                                            <span asp-validation-for="Input.Nombres" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="Input.Apellidos" class="form-label"></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                    <i class="ti ti-user-check text-muted fs-xl"></i>
+                                                </span>
+                                                <input asp-for="Input.Apellidos" class="form-control" placeholder="Ej: Pérez Rodríguez" />
+                                            </div>
+                                            <span asp-validation-for="Input.Apellidos" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="Input.Email" class="form-label"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="ti ti-mail text-muted fs-xl"></i>
+                                            </span>
+                                            <input asp-for="Input.Email" class="form-control" placeholder="ejemplo@correo.com" />
+                                        </div>
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="Input.Telefono" class="form-label"></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                    <i class="ti ti-phone text-muted fs-xl"></i>
+                                                </span>
+                                                <input asp-for="Input.Telefono" class="form-control" placeholder="809-555-1234" />
+                                            </div>
+                                            <span asp-validation-for="Input.Telefono" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group col-md-6 mb-3">
+                                            <label asp-for="Input.Cedula" class="form-label"></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light">
+                                                    <i class="ti ti-id text-muted fs-xl"></i>
+                                                </span>
+                                                <input asp-for="Input.Cedula" class="form-control" placeholder="Ej: 001-1234567-8" />
+                                            </div>
+                                            <span asp-validation-for="Input.Cedula" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="Input.Direccion" class="form-label"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="ti ti-map-pin text-muted fs-xl"></i>
+                                            </span>
+                                            <textarea asp-for="Input.Direccion" class="form-control" rows="2" placeholder="Ej: Calle 123, Zona Colonial, Santo Domingo"></textarea>
+                                        </div>
+                                        <span asp-validation-for="Input.Direccion" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group col-md-12 mb-3">
+                                        <label asp-for="Input.Parentesco" class="form-label"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="ti ti-users text-muted fs-xl"></i>
+                                            </span>
+                                            <select asp-for="Input.Parentesco" class="form-control">
+                                                <option value="" selected disabled>Selecciona un parentesco</option>
+                                                <option>Padre</option>
+                                                <option>Madre</option>
+                                                <option>Tutor</option>
+                                                <option>Otro</option>
+                                            </select>
+                                        </div>
+                                        <span asp-validation-for="Input.Parentesco" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button id="registerSubmit" type="submit" class="btn btn-primary fw-semibold py-2">Crear cuenta</button>
+                                    </div>
+                                </form>
+
+                                <p class="text-muted text-center mt-4 mb-0">
+                                    Ya tienes una cuenta? <a href="auth-2-sign-in.html" class="text-decoration-underline link-offset-3 fw-semibold">Login</a>
+                                </p>
+
+                                <p class="text-center text-muted mt-4 mb-0">
+                                    2025 ERP Loyola Equipo de desarrollo
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
