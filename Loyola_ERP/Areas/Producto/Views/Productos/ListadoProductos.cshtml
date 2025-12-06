@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Listado de productos";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4 text-success">Listado de productos</h2>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form id="formNuevoProducto" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="nombre" placeholder="Nombre del producto" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" class="form-control" id="precio" placeholder="Precio" min="0" step="0.01" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="categoria" placeholder="Categoría" required>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-success">Crear producto</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-2 d-grid">
+            <a href="@Url.Action("Producto","Productos",new {area = "Producto"})" class="btn btn-secondary">Crear producto</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle" id="tablaProductos">
+                <thead class="table-success">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Categoría</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los productos se renderizan aquí por jQuery -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    // Datos de prueba
+    var productos = [
+        { nombre: "Manzanas orgánicas", precio: 2.50, categoria: "Frutas" },
+        { nombre: "Pan integral", precio: 1.20, categoria: "Panadería" },
+        { nombre: "Leche de almendra", precio: 3.00, categoria: "Bebidas" }
+    ];
+
+    function renderProductos() {
+        var $tbody = $("#tablaProductos tbody");
+        $tbody.empty();
+        $.each(productos, function (i, prod) {
+            $tbody.append(
+                "<tr>" +
+                    "<td>" + prod.nombre + "</td>" +
+                    "<td>€ " + prod.precio.toFixed(2) + "</td>" +
+                    "<td>" + prod.categoria + "</td>" +
+                "</tr>"
+            );
+        });
+    }
+
+    $("#formNuevoProducto").on("submit", function (e) {
+        e.preventDefault();
+        var nombre = $("#nombre").val().trim();
+        var precio = parseFloat($("#precio").val());
+        var categoria = $("#categoria").val().trim();
+
+        if (nombre && !isNaN(precio) && categoria) {
+            productos.push({ nombre: nombre, precio: precio, categoria: categoria });
+            renderProductos();
+            this.reset();
+        }
+    });
+
+    // Inicializa la tabla con los datos de prueba
+    $(document).ready(function () {
+        renderProductos();
+    });
+</script>

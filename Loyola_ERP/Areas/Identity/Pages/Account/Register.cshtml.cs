@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using UI.Models;
 
 namespace Loyola_ERP.Areas.Identity.Pages.Account
 {
@@ -29,21 +30,21 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly TiendaProductosContext _context;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            TiendaProductosContext tiendaProductosContext)
+            
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _context = tiendaProductosContext;
         }
 
         /// <summary>
@@ -80,7 +81,6 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            // Adicionales para tabla de usuarios externos
             [Required]
             [Display(Name = "Nombres")]
             public string Nombres { get; set; }
@@ -98,13 +98,10 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
             [Display(Name = "Cédula")]
             public string Cedula { get; set; }
 
-            [Required]
-            [Display(Name = "Dirección")]
-            public string Direccion { get; set; }
+            [Required(ErrorMessage = "Es necesario colocar un rol.")]
+            [Display(Name = "Rol")]
+            public int RoleId { get; set; }
 
-            [Required]
-            [Display(Name = "Parentesco")]
-            public string Parentesco { get; set; }
         }
 
 
@@ -121,33 +118,34 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                var passwordGenerada = "Test_123";
-               var user = CreateUser();
+               var user = new IdentityUser()
+               {
+                     UserName = Input.Email,
+                     Email = Input.Email,
+               };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
                 var result = await _userManager.CreateAsync(user, passwordGenerada);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    var datos = new DatosGeneralesUsuario
+                    {
+                        UserId = user.Id,
+                        Email = Input.Email,
+                        Nombres = Input.Nombres,
+                        Apellidos = Input.Apellidos,
+                        Telefono = Input.Telefono,
+                        Cedula = Input.Cedula,
+                        RoleId = Input.RoleId
+                    };
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    _context.DatosGeneralesUsuarios.Add(datos);
+                    await _context.SaveChangesAsync();
 
-                    // Envía el correo con la contraseña y el enlace de confirmación
-                    await _emailSender.SendEmailAsync(Input.Email, "Registro de cuenta exitoso",
-                        $@"Hola, su cuenta fue creada exitosamente.<br>
-                    Su contraseña temporal es: <strong>{passwordGenerada}</strong><br><br>
-                    Por favor confirme su correo haciendo clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aquí</a>.");
-
-                    // Redirige al login después del registro
                     return RedirectToPage("/Account/Login", new { area = "Identity" });
 
                 }
@@ -159,29 +157,6 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
-        }
-
-        private IdentityUser CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<IdentityUser>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
-        }
-
-        private IUserEmailStore<IdentityUser> GetEmailStore()
-        {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-            return (IUserEmailStore<IdentityUser>)_userStore;
         }
     }
 }

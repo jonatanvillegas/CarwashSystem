@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using System;
+using UI.Models;
 using UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddSqlServer<TiendaProductosContext>(connectionString);
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

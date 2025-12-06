@@ -101,35 +101,19 @@
                                             <span asp-validation-for="Input.Cedula" class="text-danger"></span>
                                         </div>
                                     </div>
-
-                                    <div class="mb-3">
-                                        <label asp-for="Input.Direccion" class="form-label"></label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light">
-                                                <i class="ti ti-map-pin text-muted fs-xl"></i>
-                                            </span>
-                                            <textarea asp-for="Input.Direccion" class="form-control" rows="2" placeholder="Ej: Calle 123, Zona Colonial, Santo Domingo"></textarea>
-                                        </div>
-                                        <span asp-validation-for="Input.Direccion" class="text-danger"></span>
-                                    </div>
-
                                     <div class="form-group col-md-12 mb-3">
-                                        <label asp-for="Input.Parentesco" class="form-label"></label>
+                                        <label asp-for="Input.RoleId" class="form-label"></label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light">
                                                 <i class="ti ti-users text-muted fs-xl"></i>
                                             </span>
-                                            <select asp-for="Input.Parentesco" class="form-control">
-                                                <option value="" selected disabled>Selecciona un parentesco</option>
-                                                <option>Padre</option>
-                                                <option>Madre</option>
-                                                <option>Tutor</option>
-                                                <option>Otro</option>
+                                            <select asp-for="Input.RoleId" class="form-control">
+                                                <option value="1">Admin</option>
+                                                <option value="2" selected>Ventas</option>
                                             </select>
                                         </div>
-                                        <span asp-validation-for="Input.Parentesco" class="text-danger"></span>
+                                        <span asp-validation-for="Input.RoleId" class="text-danger"></span>
                                     </div>
-
                                     <div class="d-grid">
                                         <button id="registerSubmit" type="submit" class="btn btn-primary fw-semibold py-2">Crear cuenta</button>
                                     </div>
