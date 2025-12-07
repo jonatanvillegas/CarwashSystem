@@ -43,6 +43,9 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+// Agregar soporte para PWA
+builder.Services.AddProgressiveWebApp();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

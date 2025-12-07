@@ -53,44 +53,14 @@
                             <span class="align-middle">Profile</span>
                         </a>
 
-                        <!-- Notifications -->
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <i class="ti ti-bell-ringing me-2 fs-17 align-middle"></i>
-                            <span class="align-middle">Notifications</span>
-                        </a>
-
-                        <!-- Wallet -->
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <i class="ti ti-credit-card me-2 fs-17 align-middle"></i>
-                            <span class="align-middle">Balance: <span class="fw-semibold">$985.25</span></span>
-                        </a>
-
-                        <!-- Settings -->
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <i class="ti ti-settings-2 me-2 fs-17 align-middle"></i>
-                            <span class="align-middle">Account Settings</span>
-                        </a>
-
-                        <!-- Support -->
-                        <a href="javascript:void(0);" class="dropdown-item">
-                            <i class="ti ti-headset me-2 fs-17 align-middle"></i>
-                            <span class="align-middle">Support Center</span>
-                        </a>
-
-                        <!-- Divider -->
-                        <div class="dropdown-divider"></div>
-
-                        <!-- Lock -->
-                        <a href=@Url.Action("LockScreen", "Auth1") class="dropdown-item">
-                            <i class="ti ti-lock me-2 fs-17 align-middle"></i>
-                            <span class="align-middle">Lock Screen</span>
-                        </a>
 
                         <!-- Logout -->
-                        <a href="javascript:void(0);" class="dropdown-item text-danger fw-semibold">
-                            <i class="ti ti-logout-2 me-2 fs-17 align-middle"></i>
-                            <span class="align-middle">Log Out</span>
-                        </a>
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                            <button type="submit" class="dropdown-item text-danger fw-semibold" style="background:none; border:none; width:100%; text-align:left;">
+                                <i class="ti ti-logout-2 me-2 fs-17 align-middle"></i>
+                                <span class="align-middle">Cerrar sesión</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
