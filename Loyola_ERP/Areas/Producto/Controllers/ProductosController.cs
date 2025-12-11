@@ -20,22 +20,47 @@ namespace UI.Areas.Producto.Controllers
         {
             return View();
         }
-        public IActionResult Producto(int producto = 0)
+        public async Task<IActionResult> Producto(int productoId = 0)
         {
-            return View();
+            var producto = await _context.Productos.FirstOrDefaultAsync(c => c.Id == productoId);
+            if(producto == null)
+            {
+                producto = new Productos();
+            }
+            return View(producto);
         }
         [HttpPost]
         public async Task<IActionResult> GuardarProducto([FromBody] Productos modelo)
         {
-                         
+            if (modelo.Id > 0)
+            {
+                var productoExistente = await _context.Productos.FindAsync(modelo.Id);
+                if (productoExistente != null)
+                {
+                    productoExistente.Nombre = modelo.Nombre;
+                    productoExistente.Codigo = modelo.Codigo;
+                    productoExistente.Stock = modelo.Stock;
+                    productoExistente.Precio = modelo.Precio;
+                    productoExistente.EstadoId = modelo.EstadoId;
+
+                    _context.Productos.Update(productoExistente);
+                    await _context.SaveChangesAsync();
+
+                    return Json(new { mensaje = "Producto actualizado exitosamente." });
+                }
+                else
+                {
+                    return Json(new { mensaje = "Producto no encontrado." });
+                }
+            }
+            else
+            {
                 await _context.Productos.AddAsync(modelo);
                 await _context.SaveChangesAsync();
 
-                return Json(new { mensaje = "Producto guardado exitosamente." });      
-            
+                return Json(new { mensaje = "Producto guardado exitosamente." });
+            }
         }
-
-
         [HttpGet]
         public async Task<IActionResult> ListarProductos()
         {

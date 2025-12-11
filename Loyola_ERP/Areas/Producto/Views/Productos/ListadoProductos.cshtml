@@ -29,24 +29,23 @@
 
             </form>
         </div>
-       
     </div>
 
     <div class="card shadow-sm">
-        <div class="card-body">
-            <table class="table table-hover align-middle" id="tablaProductos">
+        <div class="card-body" style="overflow-x: auto;">
+            <table class="table table-hover align-middle" id="tablaProductos" style="min-width: 1200px;">
                 <thead class="table-success">
                     <tr>
                         <th>Nombre</th>
-                        <th>Codigo</th>
+                        <th>Código</th>
                         <th>Stock</th>
                         <th>Precio</th>
                         <th>Estado</th>
-
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Los productos se renderizan aquí por jQuery -->
+                    <!-- Filas se generarán dinámicamente -->
                 </tbody>
             </table>
         </div>
@@ -75,7 +74,7 @@
         var estado = $("#filtroEstado").val();
 
         $.ajax({
-            url: '@Url.Action("ObtenerProductos", "Productos")',
+            url: '@Url.Action("ObtenerProductos", "Productos", new { area = "Producto" })',
             type: "GET",
             data: {
                 nombreBusqueda: nombre,
@@ -101,6 +100,16 @@
                             badgeClass = 'badge bg-secondary';
                         }
 
+                        // URL base a la acción Producto (será renderizada por Razor)
+                        const urlProducto = '@Url.Action("Producto", "Productos", new { area = "Producto" })';
+
+                        // Botón Editar: se añade producto.id como parámetro productoId
+                        const btnEditar = `
+                            <a href="${urlProducto}?productoId=${producto.id}" class="btn btn-sm btn-primary">
+                                Editar
+                            </a>
+                        `;
+
                         const newRow = `
                             <tr>
                                 <td>${producto.nombre}</td>
@@ -108,18 +117,19 @@
                                 <td>${producto.stock}</td>
                                 <td>$${parseFloat(producto.precio).toFixed(2)}</td>
                                 <td><span class="${badgeClass}">${producto.estadoNombre}</span></td>
+                                <td>${btnEditar}</td>
                             </tr>
                         `;
 
                         $tbody.append(newRow);
                     });
                 } else {
-                    $tbody.append('<tr><td colspan="5" class="text-center">No hay productos registrados.</td></tr>');
+                    $tbody.append('<tr><td colspan="6" class="text-center">No hay productos registrados.</td></tr>');
                 }
             },
             error: function (xhr, status, error) {
                 console.error("Error al cargar productos:", status, error, xhr.responseText);
-                $("#tablaProductos tbody").html('<tr><td colspan="5" class="text-danger text-center">Error al cargar el listado.</td></tr>');
+                $("#tablaProductos tbody").html('<tr><td colspan="6" class="text-danger text-center">Error al cargar el listado.</td></tr>');
             }
         });
     }

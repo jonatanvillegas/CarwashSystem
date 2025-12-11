@@ -1,17 +1,17 @@
-﻿@{
-    ViewBag.Title = "Producto";
+﻿@using UI.Models
+@model Productos
+@{
+    ViewData["Title"] = "Producto";
 }
-
 <div class="container-fluid mt-2">
 
-    <!-- FORMULARIO DE PRODUCTO -->
-    <form id="formProducto">
+    <div>
+
+        <input type="hidden" id="productoId" value="@(Model?.Id ?? 0)" />
 
         <div class="row justify-content-center">
             <div class="col-xxl-10">
                 <div class="row">
-
-                    <!-- COLUMNA IZQUIERDA -->
                     <div class="col-xxl-8">
 
                         <!-- INFORMACIÓN DEL PRODUCTO -->
@@ -29,7 +29,7 @@
                                                 Nombre del producto <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" class="form-control" id="nombre"
-                                                   placeholder="Ingrese el nombre del producto" required>
+                                                   placeholder="Ingrese el nombre del producto" value="@(Model?.Nombre ?? "")" required>
                                         </div>
                                     </div>
 
@@ -39,7 +39,7 @@
                                                 Código <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" class="form-control" id="codigo"
-                                                   placeholder="Ej: SOFA-10058" required>
+                                                   placeholder="Ej: SOFA-10058" value="@(Model?.Codigo ?? "")" required>
                                         </div>
                                     </div>
 
@@ -49,17 +49,7 @@
                                                 Stock <span class="text-danger">*</span>
                                             </label>
                                             <input type="number" class="form-control" id="stock"
-                                                   placeholder="Cantidad en inventario">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">
-                                                Precio <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="number" class="form-control" id="precio"
-                                                   placeholder="Precio del producto">
+                                                   placeholder="Cantidad en inventario" value="@(Model != null ? Model.Stock.ToString() : "")">
                                         </div>
                                     </div>
 
@@ -68,17 +58,21 @@
                                             <label class="form-label">
                                                 Estado <span class="text-danger">*</span>
                                             </label>
-                                            <select class="form-select" id="estado" required>
-                                                <option value="">Seleccione un estado</option>
-                                                <option value="1">Activo</option> 
-                                                <option value="2">Inactivo</option> </select>
+                                            <select class="form-select" id="estado" name="EstadoId" required>
+                                                <option value="1">
+                                                    Activo
+                                                </option>
+                                                <option value="2">
+                                                    Inactivo
+                                                </option>
+                                            </select>
+
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-
 
                         <!-- IMAGEN DEL PRODUCTO -->
                         <div class="card mt-3">
@@ -90,8 +84,7 @@
                             </div>
 
                             <div class="card-body">
-
-                                <form action="/" method="post" class="dropzone" id="myAwesomeDropzone"
+                                @* <form action="/" method="post" class="dropzone" id="myAwesomeDropzone"
                                       data-plugin="dropzone" data-previews-container="#file-previews"
                                       data-upload-preview-template="#uploadPreviewTemplate">
                                     <div class="fallback">
@@ -106,7 +99,7 @@
                                         </div>
                                         <h4 class="mb-2">Suelta los archivos aquí o haz clic.</h4>
                                     </div>
-                                </form>
+                                </form> *@
 
                                 <div class="dropzone-previews mt-3" id="file-previews"></div>
                             </div>
@@ -114,8 +107,6 @@
 
                     </div>
 
-
-                    <!-- COLUMNA DERECHA -->
                     <div class="col-xxl-4">
 
                         <!-- PRECIO -->
@@ -132,8 +123,9 @@
                                     <label class="form-label">Precio Base <span class="text-danger">*</span></label>
 
                                     <div class="app-search">
-                                        <input type="number" class="form-control" id="preciodescuento"
-                                               placeholder="Ej: 199.99">
+                                        <input type="number" step="0.01" class="form-control" id="precio"
+                                               placeholder="Ej: 199.99"
+                                               value="@(Model != null ? (Model.Precio > 0 ? Model.Precio.ToString("N2") : "") : "")">
                                         <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
                                     </div>
                                 </div>
@@ -141,29 +133,18 @@
 
                         </div>
 
-
                         <!-- ACCIONES -->
                         <div class="card mt-3">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="card-title mb-0">Acciones</h5>
 
                                 <div class="btn-group">
-
-                                    <!-- GUARDAR -->
                                     <button type="button" id="btnGuardar" class="btn btn-success">
                                         <i data-lucide="save"></i> Guardar
                                     </button>
-
-                                    <!-- EDITAR -->
-                                    <button type="button" id="btnEditar" class="btn btn-outline-primary">
-                                        <i data-lucide="pencil"></i> Editar
-                                    </button>
-
-                                    <!-- REGRESAR -->
                                     <a href="javascript:history.back()" class="btn btn-outline-secondary">
                                         <i data-lucide="arrow-left"></i> Regresar
                                     </a>
-
                                 </div>
                             </div>
                         </div>
@@ -174,42 +155,37 @@
             </div>
         </div>
 
-    </form>
+    </div>
 </div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $("#btnGuardar").click(function () {
+            const stockVal = $("#stock").val();
+            const precioVal = $("#precio").val();
 
-
-<!-- jQuery para AJAX -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<script>
-
-    $("#btnGuardar").click(function () {
-        const stockVal = $("#stock").val();
-        const precioVal = $("#precio").val() || $("#precios").val(); // Usar el ID correcto
-
-        const data = {
-            Nombre: $("#nombre").val(),
-            Codigo: $("#codigo").val(),
-            // Si el valor está vacío, enviamos 0, si no, lo convertimos.
-            Stock: stockVal ? parseInt(stockVal) : 0,
-            Precio: precioVal ? parseFloat(precioVal) : 0.0,
-            // ¡Importante! Asegúrate de que $("#estado").val() devuelva un número
-            EstadoId: parseInt($("#estado").val())
-        };
-
-        $.ajax({
-            url: '@Url.Action("GuardarProducto", "Productos", new { area = "Producto" })',
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function (resp) {
-                alert(resp.mensaje);
-                window.location.href = "/Producto/Productos/ListadoProductos";
-            },
-            error: function (xhr) {
-                alert("Error al guardar: " + xhr.responseText);
-            }
+            const data = {
+                Id: parseInt($("#productoId").val()) || 0,
+                Nombre: $("#nombre").val(),
+                Codigo: $("#codigo").val(),
+                Stock: stockVal ? parseInt(stockVal) : 0,
+                Precio: precioVal ? parseFloat(precioVal) : 0.0,
+                EstadoId: parseInt($("#estado").val())
+            };
+        console.log(data);
+            $.ajax({
+                url: '@Url.Action("GuardarProducto", "Productos", new { area = "Producto" })',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (resp) {
+                    alert(resp.mensaje);
+                    window.location.href = "/Producto/Productos/ListadoProductos";
+                },
+                error: function (xhr) {
+                    alert("Error al guardar: " + xhr.responseText);
+                }
+            });
         });
-    });
-
-</script>
+    </script>
+}
