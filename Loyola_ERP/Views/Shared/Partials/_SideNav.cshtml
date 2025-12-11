@@ -85,6 +85,27 @@
                     </ul>
                 </div>
             </li>
+
+
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarVentas" aria-expanded="false" aria-controls="sidebarVentas" class="side-nav-link">
+                    <span class="menu-icon"><i class="ti ti-layout-dashboard"></i></span>
+                    <span class="menu-text" data-lang="ventas">Ventas</span>
+                </a>
+                <div class="collapse" id="sidebarVentas">
+                    <ul class="sub-menu">
+                        <li class="side-nav-item">
+                            <a href=@Url.Action("Ventas", "Ventas", new { area = "Venta" }) class="side-nav-link">
+                                <span class="menu-text">Crear venta</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+
+
+
         </ul>
     </div>
 </div>

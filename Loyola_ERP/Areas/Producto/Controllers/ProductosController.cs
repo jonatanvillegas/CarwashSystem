@@ -93,6 +93,24 @@ namespace UI.Areas.Producto.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult ObtenerEstados()
+        {
+            try
+            {
+                var estados = _context.ProductoView
+                 .Select(v => new { id = v.estadoId, nombre = v.estadoNombre })
+                 .Distinct()
+                 .ToList();
+
+                return Json(estados);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
 
     }
 }
