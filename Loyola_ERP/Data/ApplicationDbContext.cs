@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Loyola_ERP.Data
 {
     public class ApplicationDbContext : IdentityDbContext
@@ -9,5 +10,7 @@ namespace Loyola_ERP.Data
             : base(options)
         {
         }
+
+      
     }
 }

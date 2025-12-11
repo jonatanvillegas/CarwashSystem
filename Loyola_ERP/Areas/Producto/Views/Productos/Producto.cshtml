@@ -1,151 +1,215 @@
 ﻿@{
     ViewBag.Title = "Producto";
 }
+
 <div class="container-fluid mt-2">
-    <div class="row justify-content-center">
-        <div class="col-xxl-10">
-            <div class="row">
-                <div class="col-xxl-8">
-                    <div class="card">
-                        <div class="card-header d-block p-3">
-                            <h4 class="card-title mb-1">Product Information</h4>
-                            <p class="text-muted mb-0">
-                                To add a new product, please provide the necessary
-                                details in the fields below.
-                            </p>
-                        </div> <!-- end card-header -->
 
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="productName" class="form-label">
-                                            Product Name <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="productName"
-                                               placeholder="Enter product name" required="">
-                                    </div>
-                                </div>
+    <!-- FORMULARIO DE PRODUCTO -->
+    <form id="formProducto">
 
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="skuId" class="form-label">
-                                            SKU <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="skuId"
-                                               placeholder="SOFA-10058" required="">
+        <div class="row justify-content-center">
+            <div class="col-xxl-10">
+                <div class="row">
+
+                    <!-- COLUMNA IZQUIERDA -->
+                    <div class="col-xxl-8">
+
+                        <!-- INFORMACIÓN DEL PRODUCTO -->
+                        <div class="card">
+                            <div class="card-header d-block p-3">
+                                <h4 class="card-title mb-1">Información del Producto</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row">
+
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Nombre del producto <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="nombre"
+                                                   placeholder="Ingrese el nombre del producto" required>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-3">
-                                        <label for="stockNumber" class="form-label">
-                                            Stock <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="number" class="form-control" id="stockNumber"
-                                               placeholder="250">
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Código <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="codigo"
+                                                   placeholder="Ej: SOFA-10058" required>
+                                        </div>
                                     </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Stock <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="number" class="form-control" id="stock"
+                                                   placeholder="Cantidad en inventario">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Precio <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="number" class="form-control" id="precio"
+                                                   placeholder="Precio del producto">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Estado <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select" id="estado" required>
+                                                <option value="">Seleccione un estado</option>
+                                                <option value="1">Activo</option> 
+                                                <option value="2">Inactivo</option> </select>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                        </div> <!-- end card-body-->
-                    </div> <!-- end card-->
-
-                    <div class="card">
-                        <div class="card-header d-block p-3">
-                            <h4 class="card-title mb-1">Product Image</h4>
-                            <p class="text-muted mb-0">
-                                To upload a product image, please use the option below to
-                                select and upload the relevant file.
-                            </p>
-                        </div> <!-- end card-header -->
-
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <form action="/" method="post" class="dropzone" id="myAwesomeDropzone"
-                                          data-plugin="dropzone" data-previews-container="#file-previews"
-                                          data-upload-preview-template="#uploadPreviewTemplate">
-                                        <div class="fallback">
-                                            <input name="file" type="file">
-                                        </div>
-
-                                        <div class="dz-message needsclick">
-                                            <div class="avatar-lg mx-auto mb-3">
-                                                <span class="avatar-title bg-info-subtle text-info rounded-circle">
-                                                    <i class="fs-24 ti ti-cloud-upload"></i>
-                                                </span>
-                                            </div>
-                                            <h4 class="mb-2">Drop files here or click to upload.</h4>
-                                            <p class="text-muted fst-italic mb-3">
-                                                You can drag images here, or
-                                                browse files via the button below.
-                                            </p>
-                                            <button type="button" class="btn btn-sm shadow btn-default">
-                                                Browse
-                                                Images
-                                            </button>
-                                        </div>
-                                    </form>
-
-                                    <!-- Preview -->
-                                    <div class="dropzone-previews mt-3" id="file-previews"></div>
-
-                                    <!-- file preview template -->
-                                    <div class="d-none" id="uploadPreviewTemplate">
-                                        <div class="card mt-1 mb-0 border-dashed border">
-                                            <div class="p-2">
-                                                <div class="row align-items-center">
-                                                    <div class="col-auto">
-                                                        <img data-dz-thumbnail src="#"
-                                                             class="avatar-sm rounded bg-light" alt="">
-                                                    </div>
-                                                    <div class="col ps-0">
-                                                        <a href="javascript:void(0);" class="fw-semibold"
-                                                           data-dz-name></a>
-                                                        <p class="mb-0 text-muted" data-dz-size></p>
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <a href="" class="btn btn-link btn-lg text-danger"
-                                                           data-dz-remove>
-                                                            <i class="ti ti-x"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                    </div> 
-                </div> 
-
-                <div class="col-xxl-4">
-                    <div class="card">
-                        <div class="card-header d-block p-3">
-                            <h4 class="card-title mb-1">Pricing</h4>
-                            <p class="text-muted mb-0">
-                                Set the base price and applicable discount for the
-                                product using the options below.
-                            </p>
                         </div>
 
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="basePrice" class="form-label">
-                                    Base Price <span class="text-danger">*</span>
-                                </label>
-                                <div class="app-search">
-                                    <input type="number" class="form-control" id="basePrice"
-                                           placeholder="Enter base price (e.g., 199.99)">
-                                    <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
-                                </div>
+
+                        <!-- IMAGEN DEL PRODUCTO -->
+                        <div class="card mt-3">
+                            <div class="card-header d-block p-3">
+                                <h4 class="card-title mb-1">Imagen del producto</h4>
+                                <p class="text-muted mb-0">
+                                    Subir imagen del producto.
+                                </p>
                             </div>
 
+                            <div class="card-body">
+
+                                <form action="/" method="post" class="dropzone" id="myAwesomeDropzone"
+                                      data-plugin="dropzone" data-previews-container="#file-previews"
+                                      data-upload-preview-template="#uploadPreviewTemplate">
+                                    <div class="fallback">
+                                        <input name="file" type="file">
+                                    </div>
+
+                                    <div class="dz-message needsclick">
+                                        <div class="avatar-lg mx-auto mb-3">
+                                            <span class="avatar-title bg-info-subtle text-info rounded-circle">
+                                                <i class="fs-24 ti ti-cloud-upload"></i>
+                                            </span>
+                                        </div>
+                                        <h4 class="mb-2">Suelta los archivos aquí o haz clic.</h4>
+                                    </div>
+                                </form>
+
+                                <div class="dropzone-previews mt-3" id="file-previews"></div>
+                            </div>
                         </div>
+
                     </div>
+
+
+                    <!-- COLUMNA DERECHA -->
+                    <div class="col-xxl-4">
+
+                        <!-- PRECIO -->
+                        <div class="card">
+                            <div class="card-header d-block p-3">
+                                <h4 class="card-title mb-1">Precio</h4>
+                                <p class="text-muted mb-0">
+                                    Establezca el precio del producto.
+                                </p>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Precio Base <span class="text-danger">*</span></label>
+
+                                    <div class="app-search">
+                                        <input type="number" class="form-control" id="preciodescuento"
+                                               placeholder="Ej: 199.99">
+                                        <i data-lucide="dollar-sign" class="app-search-icon text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACCIONES -->
+                        <div class="card mt-3">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Acciones</h5>
+
+                                <div class="btn-group">
+
+                                    <!-- GUARDAR -->
+                                    <button type="button" id="btnGuardar" class="btn btn-success">
+                                        <i data-lucide="save"></i> Guardar
+                                    </button>
+
+                                    <!-- EDITAR -->
+                                    <button type="button" id="btnEditar" class="btn btn-outline-primary">
+                                        <i data-lucide="pencil"></i> Editar
+                                    </button>
+
+                                    <!-- REGRESAR -->
+                                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                                        <i data-lucide="arrow-left"></i> Regresar
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
-        </div> 
-    </div> 
+        </div>
 
+    </form>
 </div>
+
+
+<!-- jQuery para AJAX -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+
+    $("#btnGuardar").click(function () {
+        const stockVal = $("#stock").val();
+        const precioVal = $("#precio").val() || $("#precios").val(); // Usar el ID correcto
+
+        const data = {
+            Nombre: $("#nombre").val(),
+            Codigo: $("#codigo").val(),
+            // Si el valor está vacío, enviamos 0, si no, lo convertimos.
+            Stock: stockVal ? parseInt(stockVal) : 0,
+            Precio: precioVal ? parseFloat(precioVal) : 0.0,
+            // ¡Importante! Asegúrate de que $("#estado").val() devuelva un número
+            EstadoId: parseInt($("#estado").val())
+        };
+
+        $.ajax({
+            url: '@Url.Action("GuardarProducto", "Productos", new { area = "Producto" })',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (resp) {
+                alert(resp.mensaje);
+                window.location.href = "/Producto/Productos/ListadoProductos";
+            },
+            error: function (xhr) {
+                alert("Error al guardar: " + xhr.responseText);
+            }
+        });
+    });
+
+</script>

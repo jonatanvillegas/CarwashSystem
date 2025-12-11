@@ -29,4 +29,8 @@
     <Folder Include="Views\Dashboards\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="efpt.config.json.user" />
+  </ItemGroup>
+
 </Project>

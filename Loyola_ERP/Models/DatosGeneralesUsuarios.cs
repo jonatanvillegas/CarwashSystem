@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace UI.Models;
 
-public partial class DatosGeneralesUsuario
+public partial class DatosGeneralesUsuarios
 {
     public int Id { get; set; }
 
