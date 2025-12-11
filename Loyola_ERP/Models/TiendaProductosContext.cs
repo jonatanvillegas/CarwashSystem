@@ -13,11 +13,17 @@ public partial class TiendaProductosContext : DbContext
     {
     }
 
-    public virtual DbSet<DatosGeneralesUsuario> DatosGeneralesUsuarios { get; set; }
+    public virtual DbSet<DatosGeneralesUsuarios> DatosGeneralesUsuarios { get; set; }
+
+    public virtual DbSet<Estados> Estados { get; set; }
+
+    public virtual DbSet<ProductoView> ProductoView { get; set; }
+
+    public virtual DbSet<Productos> Productos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<DatosGeneralesUsuario>(entity =>
+        modelBuilder.Entity<DatosGeneralesUsuarios>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__DatosGen__3214EC07A2052CA0");
 
@@ -45,6 +51,56 @@ public partial class TiendaProductosContext : DbContext
             entity.Property(e => e.UserId)
                 .IsRequired()
                 .HasMaxLength(450);
+        });
+
+        modelBuilder.Entity<Estados>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Estados__3214EC0775AE3AD8");
+
+            entity.ToTable("Estados", "Producto");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(200);
+            entity.Property(e => e.Nombre)
+                .IsRequired()
+                .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<ProductoView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("ProductoView", "Producto");
+
+            entity.Property(e => e.codigo)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.estadoNombre)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.nombre)
+                .IsRequired()
+                .HasMaxLength(150);
+            entity.Property(e => e.precio).HasColumnType("decimal(18, 2)");
+        });
+
+        modelBuilder.Entity<Productos>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC07CE63986E");
+
+            entity.ToTable("Productos", "Producto");
+
+            entity.Property(e => e.Codigo)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.Nombre)
+                .IsRequired()
+                .HasMaxLength(150);
+            entity.Property(e => e.Precio).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.Estado).WithMany(p => p.Productos)
+                .HasForeignKey(d => d.EstadoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Productos_Estados");
         });
 
         OnModelCreatingPartial(modelBuilder);

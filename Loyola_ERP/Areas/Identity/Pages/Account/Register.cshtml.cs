@@ -132,7 +132,7 @@ namespace Loyola_ERP.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var datos = new DatosGeneralesUsuario
+                    var datos = new DatosGeneralesUsuarios
                     {
                         UserId = user.Id,
                         Email = Input.Email,
