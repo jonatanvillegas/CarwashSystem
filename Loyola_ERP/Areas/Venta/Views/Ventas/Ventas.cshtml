@@ -3,6 +3,15 @@
 }
 @section Styles {
     <link href="~/areas/ventas/css/EstilosVentas.css" rel="stylesheet" />
+    <style>
+        .venta-focus {
+            padding: 4px;
+            border: 1px solid #0acf97 !important; /* color principal */
+            box-shadow: 0 0 0 2px #9ff0d9; /* tono claro */
+            background: #e6fbf4; /* fondo muy suave */
+        }
+
+    </style>
 }
 
 <div class="container-fluid py-1">
@@ -13,99 +22,37 @@
             <div class="panel-venta flex-grow-1 mb-3">
                 <h5 class="mb-3">Venta actual</h5>
 
-                <!-- Contenedor scroll -->
-                <div class="venta-items">
-
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-
-                    <!-- DUPLICA ITEMS ➜ EL SCROLL FUNCIONA SIN ENCIMARSE -->
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-                     <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-                     <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                            <small class="fw-bold">Etiquetas nilmbot B1 40x30mm</small><br>
-                            <small class="text-muted">9.00 Unidades x $140.00</small>
-                        </div>
-                        <span class="fw-bold">$1,260.00</span>
-                    </div>
-
-                </div>
+                <!-- Contenedor scroll - se reemplaza dinámicamente desde jQuery -->
+                <div class="venta-items"></div>
 
                 <!-- Total fijo abajo -->
                 <div class="mt-3">
                     <div class="d-flex justify-content-between">
                         <span class="fw-bold">Total:</span>
-                        <span class="precio-total">$1,260.00</span>
+                        <span class="precio-total">$0.00</span>
                     </div>
                 </div>
             </div>
 
             <div class="calculadora mt-auto">
                 <div class="teclado-grid g-2">
-                    <button class="btn btn-primary btn-principal" id="btn-cliente">👤 Cliente</button>
-                    <button class="btn btn-light">1</button>
-                    <button class="btn btn-light">2</button>
-                    <button class="btn btn-light">3</button>
+                    <button class="btn btn-light num-btn" data-key="2">2</button>
+                    <button class="btn btn-light num-btn" data-key="1">1</button>
                     <button class="btn btn-success" id="btn-borrar">←</button>
+                    <button class="btn btn-light num-btn" data-key="3">3</button>
 
+                    <button class="btn btn-success" id="btn-limpiar-todo">C</button>
                     <button class="btn btn-primary" id="btn-pagar">Pagar</button>
-                    <button class="btn btn-light">4</button>
-                    <button class="btn btn-light">5</button>
-                    <button class="btn btn-light">6</button>
-                    <button class="btn btn-success" id="btn-clear">C</button>
+                    <button class="btn btn-light num-btn" data-key="4">4</button>
+                    <button class="btn btn-light num-btn" data-key="5">5</button>
+                    <button class="btn btn-light num-btn" data-key="6">6</button>
 
-                    <button class="btn btn-light" id="btn-7">7</button>
-                    <button class="btn btn-light">8</button>
-                    <button class="btn btn-light" id="btn-9">9</button>
+                    <button class="btn btn-light num-btn" data-key="9" id="btn-9">9</button>
+                    <button class="btn btn-light num-btn" data-key="8">8</button>
+                    <button class="btn btn-light num-btn" data-key="7" id="btn-7">7</button>
                     <button class="btn btn-success" id="btn-dot">.</button>
 
-                    <button class="btn btn-light" id="btn-0">0</button>
+                    <button class="btn btn-light num-btn" data-key="0" id="btn-0">0</button>
                     <button class="btn btn-secondary" id="btn-sign">+/-</button>
                 </div>
             </div>
@@ -113,42 +60,377 @@
         <div class="col-md-8">
             <div class="panel-productos">
                 <div class="d-flex mb-3">
-                    <input type="text" class="form-control" placeholder="Buscar productos...">
+                    <input type="text" class="form-control" id="buscador-productos" placeholder="Buscar productos...">
                 </div>
 
-                <div class="row g-3">
-
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card producto-card p-2 text-center">
-                            <div class="mt-2 fw-bold">Adaptador USB Bluetooth</div>
-                            <div class="text-primary">$350.00</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card producto-card p-2 text-center">
-                            <div class="mt-2 fw-bold">All in One Dell touch</div>
-                            <div class="text-primary">$6,900.00</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card producto-card p-2 text-center">
-                            <div class="mt-2 fw-bold">Antena Wifi USB</div>
-                            <div class="text-primary">$150.00</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <div class="card producto-card p-2 text-center">
-                            <div class="mt-2 fw-bold">Báscula Rhino</div>
-                            <div class="text-primary">$2,400.00</div>
-                        </div>
-                    </div>
+                <div class="row g-3 productos-grid">
+                    <!-- Productos generados por jQuery -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 @section Scripts {
-    <script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
+    <script>
+        $(function () {
+            let focusedProductIndex = 0;
+            // Datos de prueba - productos disponibles
+            const productos = [
+                { id: 1, nombre: "Adaptador USB Bluetooth", precio: 350.00 },
+                { id: 2, nombre: "All in One Dell touch", precio: 6900.00 },
+                { id: 3, nombre: "Antena Wifi USB", precio: 150.00 },
+                { id: 4, nombre: "Báscula Rhino", precio: 2400.00 },
+                { id: 5, nombre: "Etiquetas nilmbot B1 40x30mm", precio: 140.00 }
+            ];
+
+            // Datos de prueba - items actualmente en la compra
+            let ventaItems = [
+                { id: 101, productoId: 5, nombre: "Etiquetas nilmbot B1 40x30mm", cantidad: 9, precioUnitario: 140.00 },
+                { id: 102, productoId: 1, nombre: "Adaptador USB Bluetooth", cantidad: 1, precioUnitario: 350.00 }
+            ];
+
+            // Para manejar edición por teclado numérico
+            let inputEditing = null;
+
+            // Utilidades
+            function formatCurrency(v) {
+                return '$' + Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            function calcularSubtotal(item) {
+                return (Number(item.cantidad) || 0) * (Number(item.precioUnitario) || 0);
+            }
+
+            function calcularTotal() {
+                const total = ventaItems.reduce((s, it) => s + calcularSubtotal(it), 0);
+                $('.precio-total').text(formatCurrency(total));
+                return total;
+            }
+
+            // Render productos disponibles
+            function renderProductos(filter = '') {
+                const container = $('.productos-grid').empty();
+                const filtro = (filter || '').toLowerCase();
+                const productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(filtro));
+                productosFiltrados.forEach((p, idx) => {
+                    const col = $(`
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="card producto-card p-2 text-center${idx === focusedProductIndex ? ' producto-focus' : ''}" data-id="${p.id}" style="cursor:pointer;">
+                                <div class="mt-2 fw-bold">${p.nombre}</div>
+                                <div class="text-primary">${formatCurrency(p.precio)}</div>
+                            </div>
+                        </div>
+                    `);
+                    col.find('.producto-card').on('click', function () {
+                        agregarProductoALaVenta(p.id);
+                    });
+                    container.append(col);
+                });
+            }
+
+            // Render items en la venta (sección compra)
+                  let focusedVentaIndex = 0;
+
+        // Render items en la venta (sección compra)
+        function renderVentaItems() {
+            const container = $('.venta-items').empty();
+            if (ventaItems.length === 0) {
+                container.append('<div class="text-muted">No hay productos agregados.</div>');
+                focusedVentaIndex = 0;
+            }
+            ventaItems.forEach((item, idx) => {
+                const totalItem = calcularSubtotal(item);
+                const row = $(`
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 venta-item-row${idx === focusedVentaIndex ? ' venta-focus' : ''}" data-id="${item.id}">
+                        <div class="venta-item-info">
+                            <small class="fw-bold venta-nombre">${item.nombre}</small><br>
+                            <small class="text-muted venta-meta">${Number(item.cantidad).toFixed(2)} Unidades x ${formatCurrency(item.precioUnitario)}</small>
+                        </div>
+                        <div class="text-end">
+                            <div><span class="fw-bold venta-total">${formatCurrency(totalItem)}</span></div>
+                            <div class="mt-1">
+                                <button class="btn btn-sm btn-outline-primary btn-editar me-1">Editar</button>
+                                <button class="btn btn-sm btn-outline-danger btn-eliminar">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                row.find('.btn-editar').on('click', function () {
+                    mostrarEditorInline(item.id);
+                });
+                row.find('.btn-eliminar').on('click', function () {
+                    eliminarItem(item.id);
+                });
+
+                container.append(row);
+            });
+            calcularTotal();
+        }
+
+        // Eliminar item y mantener el focus correcto
+        function eliminarItem(itemId) {
+            const idx = ventaItems.findIndex(it => it.id === itemId);
+            ventaItems = ventaItems.filter(it => it.id !== itemId);
+            if (focusedVentaIndex >= ventaItems.length) {
+                focusedVentaIndex = Math.max(ventaItems.length - 1, 0);
+            }
+            renderVentaItems();
+        }
+
+            // Agregar producto a la venta (si existe aumenta cantidad)
+                    function agregarProductoALaVenta(productoId) {
+            const p = productos.find(x => x.id === productoId);
+            if (!p) return;
+
+            // Buscar por productoId en el detalle de venta
+            let existente = ventaItems.find(it => it.productoId === productoId);
+            if (existente) {
+                existente.cantidad = Number(existente.cantidad) + 1;
+                // Actualiza el focus al producto existente
+                focusedVentaIndex = ventaItems.findIndex(it => it.productoId === productoId);
+            } else {
+                const nuevo = {
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    productoId: p.id,
+                    nombre: p.nombre,
+                    cantidad: 1,
+                    precioUnitario: p.precio
+                };
+                ventaItems.push(nuevo);
+                // Focus al nuevo producto agregado (último)
+                focusedVentaIndex = ventaItems.length - 1;
+            }
+            renderVentaItems();
+            // Efecto visual opcional
+            const cont = $('.venta-items').find('.venta-focus');
+            cont && cont.fadeOut(100).fadeIn(200);
+        }
+
+            // Restar producto (decrementa cantidad o elimina si llega a 0)
+            function restarProductoDeVenta(productoId) {
+                let existente = ventaItems.find(it => it.productoId === productoId);
+                if (existente) {
+                    existente.cantidad = Number(existente.cantidad) - 1;
+                    if (existente.cantidad <= 0) {
+                        ventaItems = ventaItems.filter(it => it.productoId !== productoId);
+                    }
+                    renderVentaItems();
+                }
+            }
+
+            // Mostrar editor inline (cantidad solamente editable; precio fijo)
+            function mostrarEditorInline(itemId) {
+                const index = ventaItems.findIndex(it => it.id === itemId);
+                if (index === -1) return;
+                const item = ventaItems[index];
+
+                const editor = $(`
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2 venta-item-edit" data-id="${item.id}">
+                        <div style="flex:1">
+                            <div class="mb-1 fw-bold">${item.nombre}</div>
+                            <div class="d-flex gap-2 align-items-end">
+                                <div>
+                                    <label class="form-label mb-0 small">Cantidad</label>
+                                    <input type="number" step="0.01" class="form-control form-control-sm input-cantidad" value="${item.cantidad}">
+                                </div>
+                                <div>
+                                    <label class="form-label mb-0 small">Precio (fijo)</label>
+                                    <div class="form-control form-control-sm readonly-precio" style="background:#f8f9fa; border:1px solid #ced4da;">${formatCurrency(item.precioUnitario)}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end ms-2">
+                            <div class="mb-2"><span class="fw-bold">${formatCurrency(calcularSubtotal(item))}</span></div>
+                            <div>
+                                <button class="btn btn-sm btn-success btn-guardar me-1">Guardar</button>
+                                <button class="btn btn-sm btn-secondary btn-cancelar">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                // Reemplazar la fila existente por editor
+                const filaActual = $(`.venta-item-row[data-id='${item.id}']`);
+                filaActual.replaceWith(editor);
+
+                // Control para inputs y teclado numérico
+                const $inputCantidad = editor.find('.input-cantidad');
+
+                // Focus al input cantidad por defecto
+                $inputCantidad.focus();
+                inputEditing = $inputCantidad;
+
+                $inputCantidad.on('focus', function () { inputEditing = $(this); });
+
+                editor.find('.btn-guardar').on('click', function () {
+                    const nuevaCantidad = parseFloat($inputCantidad.val()) || 0;
+
+                    if (nuevaCantidad <= 0) {
+                        alert('La cantidad debe ser mayor a 0.');
+                        $inputCantidad.focus();
+                        return;
+                    }
+
+                    // Solo actualizamos la cantidad. El precio permanece fijo (política POS).
+                    ventaItems[index].cantidad = nuevaCantidad;
+
+                    renderVentaItems();
+                });
+
+                editor.find('.btn-cancelar').on('click', function () {
+                    renderVentaItems();
+                });
+            }
+
+            function eliminarItem(itemId) {
+                ventaItems = ventaItems.filter(it => it.id !== itemId);
+                renderVentaItems();
+            }
+
+            // Limpiar toda la venta
+            $('#btn-limpiar-todo').on('click', function () {
+                if (ventaItems.length === 0) return;
+                if (confirm('¿Seguro que deseas limpiar toda la venta?')) {
+                    ventaItems = [];
+                    renderVentaItems();
+                }
+            });
+
+            // Buscador
+            $('#buscador-productos').on('input', function () {
+                renderProductos($(this).val());
+            });
+
+            // Teclado numérico / botones de calculadora
+            function appendToEditing(val) {
+                if (!inputEditing || inputEditing.length === 0) return;
+                const current = inputEditing.val() || '';
+                // Evitar múltiples puntos
+                if (val === '.' && current.includes('.')) return;
+                inputEditing.val(current + val);
+                inputEditing.trigger('input');
+                inputEditing.focus();
+            }
+
+            $('.num-btn').on('click', function () {
+                const key = $(this).data('key');
+                appendToEditing(String(key));
+            });
+
+            $('#btn-dot').on('click', function () {
+                appendToEditing('.');
+            });
+
+            $('#btn-clear').on('click', function () {
+                if (!inputEditing) return;
+                inputEditing.val('');
+                inputEditing.focus();
+            });
+
+            $('#btn-borrar').on('click', function () {
+                if (!inputEditing) return;
+                const cur = inputEditing.val() || '';
+                inputEditing.val(cur.slice(0, -1));
+                inputEditing.focus();
+            });
+
+            $('#btn-sign').on('click', function () {
+                if (!inputEditing) return;
+                const val = parseFloat(inputEditing.val()) || 0;
+                inputEditing.val((-val).toString());
+                inputEditing.focus();
+            });
+
+            // Pagar / Cliente (placeholders)
+            $('#btn-pagar').on('click', function () {
+                const total = calcularTotal();
+                if (ventaItems.length === 0) {
+                    alert('No hay productos en la venta.');
+                    return;
+                }
+                alert('Total a pagar: ' + formatCurrency(total) + '\n(Implementar flujo de pago)');
+            });
+
+            $('#btn-cliente').on('click', function () {
+                alert('Seleccionar cliente (funcionalidad de ejemplo).');
+            });
+
+            // Atajos de teclado para el detalle de venta
+            $(document).on('keydown', function (e) {
+                // Si hay input activo (edición), solo permitir guardar con Ctrl+S y cancelar con Esc
+                if ($('.venta-item-edit input:focus').length > 0) {
+                    // Guardar edición con Ctrl+S
+                    if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+                        e.preventDefault();
+                        $('.venta-item-edit .btn-guardar').click();
+                    }
+                    // Cancelar edición con Esc
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        $('.venta-item-edit .btn-cancelar').click();
+                    }
+                    return;
+                }
+
+                // Atajos cuando NO hay input activo
+                // Tab y Shift+Tab para navegar
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    if (ventaItems.length === 0) return;
+                    if (e.shiftKey) {
+                        focusedVentaIndex = (focusedVentaIndex - 1 + ventaItems.length) % ventaItems.length;
+                    } else {
+                        focusedVentaIndex = (focusedVentaIndex + 1) % ventaItems.length;
+                    }
+                    renderVentaItems();
+                }
+                // Enter para editar el producto enfocado
+                if (e.key === 'Enter') {
+                    if (ventaItems.length === 0) return;
+                    mostrarEditorInline(ventaItems[focusedVentaIndex].id);
+                }
+                // + para sumar cantidad al producto enfocado
+                if (e.key === '+') {
+                    e.preventDefault();
+                    if (ventaItems.length === 0) return;
+                    ventaItems[focusedVentaIndex].cantidad++;
+                    renderVentaItems();
+                }
+                // - para restar cantidad al producto enfocado
+                if (e.key === '-') {
+                    e.preventDefault();
+                    if (ventaItems.length === 0) return;
+                    ventaItems[focusedVentaIndex].cantidad--;
+                    if (ventaItems[focusedVentaIndex].cantidad <= 0) {
+                        eliminarItem(ventaItems[focusedVentaIndex].id);
+                    } else {
+                        renderVentaItems();
+                    }
+                }
+                // Eliminar producto enfocado con Delete
+                if (e.key === 'Delete') {
+                    if (ventaItems.length === 0) return;
+                    eliminarItem(ventaItems[focusedVentaIndex].id);
+                }
+                // Buscar producto
+                if ((e.ctrlKey && e.key === 'f') || e.key === 'F2') {
+                    e.preventDefault();
+                    $('#buscador-productos').focus().select();
+                }
+                // Limpiar toda la venta
+                if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
+                    e.preventDefault();
+                    $('#btn-limpiar-todo').click();
+                }
+            });
+
+            // Inicial render
+            renderProductos();
+            renderVentaItems();
+
+        });
     </script>
 }

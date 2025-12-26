@@ -4,11 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Linq;
 using UI.Models;
 using UI.Services;
 using static System.Net.Mime.MediaTypeNames;
-
+using Loyola_ERP.Models;
+using System.IO;
 
 namespace UI.Areas.Producto.Controllers
 {
@@ -32,83 +34,137 @@ namespace UI.Areas.Producto.Controllers
         public async Task<IActionResult> Producto(int productoId = 0)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(c => c.Id == productoId);
-            if(producto == null)
+            if (producto == null)
             {
                 producto = new Productos();
             }
+
+            // Si tenemos un producto, buscar la última imagen asociada y pasar la URL para servirla
+            if (producto.Id != 0)
+            {
+                var imagen = await _context.ProductoImagen
+                    .Where(i => i.ProductoId == producto.Id)
+                    .OrderByDescending(i => i.CreadoEn)
+                    .FirstOrDefaultAsync();
+
+                if (imagen != null)
+                {
+                    ViewBag.ExistingImageUrl = Url.Action("ObtenerImagenProducto", "Productos", new { area = "Producto", productoId = producto.Id });
+                    ViewBag.ExistingImageName = imagen.NombreArchivo ?? "imagen.jpg";
+                    ViewBag.ExistingImageSize = imagen.Tamano;
+                }
+            }
+
             return View(producto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObtenerImagenProducto(int productoId)
+        {
+            var imagen = await _context.ProductoImagen
+                .Where(i => i.ProductoId == productoId)
+                .OrderByDescending(i => i.CreadoEn)
+                .FirstOrDefaultAsync();
+
+            if (imagen == null || imagen.Contenido == null)
+                return NotFound();
+
+            return File(imagen.Contenido, imagen.ContentType ?? "image/jpeg");
         }
 
         [HttpPost]
         public async Task<IActionResult> GuardarProducto(Productos model, IFormFile imagenFile)
         {
-            // <-- Abre el bloque try que envuelve la lógica principal -->
             try
             {
-                if (!ModelState.IsValid)
-                    return View("CrearEditar", model);
+                bool esNuevo = model.Id == 0;
 
-                // SI SUBIÓ IMAGEN
-                if (imagenFile != null && imagenFile.Length > 0)
+                // Si es edición, preservar la referencia de imagen si el formulario no la envió.
+                if (!esNuevo)
                 {
-                    var uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "imagenes/productos");
+                    var productoExistente = await _context.Productos
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(p => p.Id == model.Id);
 
-                    if (!Directory.Exists(uploadsFolder))
-                        Directory.CreateDirectory(uploadsFolder);
-
-                    var extension = ".jpg"; // si quieres puedes permitir otras
-                    var fileName = $"{Guid.NewGuid()}{extension}";
-                    var filePath = Path.Combine(uploadsFolder, fileName);
-
-                    using (var image = SixLabors.ImageSharp.Image.Load(imagenFile.OpenReadStream()))
+                    if (productoExistente == null)
                     {
-                        // 🔥 COMPRESIÓN Y REDIMENSIONADO (ajustado para móviles)
-                        int maxWidth = 800;  // tamaño ideal para responsivo
-                        int maxHeight = 800;
-
-                        image.Mutate(x => x.Resize(new ResizeOptions
-                        {
-                            Mode = ResizeMode.Max,
-                            Size = new Size(maxWidth, maxHeight)
-                        }));
-
-                        // 🔥 GUARDAR COMO JPG OPTIMIZADO (MUY LIVIANO)
-                        var encoder = new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder
-                        {
-                            Quality = 75 // (0-100) 75 = recomendado
-                        };
-
-                        await image.SaveAsync(filePath, encoder);
+                        return NotFound(new { mensaje = "Producto no encontrado" });
                     }
 
-                    // GUARDAR NOMBRE DE ARCHIVO EN BD
-                    var producto = new Productos
+                    // El binder no envía el campo Imagen desde el formulario, por eso lo preservamos.
+                    if (string.IsNullOrEmpty(model.Imagen))
                     {
-                        Id = model.Id,
-                        Nombre = model.Nombre,
-                        Codigo = model.Codigo,
-                        Stock = model.Stock,
-                        Precio = model.Precio,
-                        EstadoId = model.EstadoId,
-                        Imagen = fileName // Guardar nombre de la imagen en BD
+                        model.Imagen = productoExistente.Imagen;
+                    }
+                }
+
+                // 1️⃣ Guardar producto (crea o edita)
+                await _productoService.Guardar(model);
+
+                // 2️⃣ Procesar imagen (si existe)
+                if (imagenFile != null && imagenFile.Length > 0)
+                {
+                    using var image = SixLabors.ImageSharp.Image.Load(imagenFile.OpenReadStream());
+
+                    image.Mutate(x => x.Resize(new ResizeOptions
+                    {
+                        Mode = ResizeMode.Max,
+                        Size = new Size(800, 800)
+                    }));
+
+                    var encoder = new JpegEncoder { Quality = 75 };
+
+                    using var ms = new MemoryStream();
+                    await image.SaveAsync(ms, encoder);
+                    var imageBytes = ms.ToArray();
+
+                    // ❗ Si es edición → eliminar la imagen anterior (la más reciente)
+                    if (!esNuevo)
+                    {
+                        var imagenAnterior = await _context.ProductoImagen
+                            .Where(x => x.ProductoId == model.Id)
+                            .OrderByDescending(x => x.CreadoEn)
+                            .FirstOrDefaultAsync();
+
+                        if (imagenAnterior != null)
+                            _context.ProductoImagen.Remove(imagenAnterior);
+                    }
+
+                    var imagenEntity = new ProductoImagen
+                    {
+                        ProductoId = model.Id,
+                        NombreArchivo = Path.GetFileName(imagenFile.FileName),
+                        ContentType = "image/jpeg",
+                        Tamano = imageBytes.LongLength,
+                        Ancho = image.Width,
+                        Alto = image.Height,
+                        Contenido = imageBytes,
+                        CreadoEn = DateTime.UtcNow
                     };
 
-                    await _productoService.Guardar(producto);
+                    _context.ProductoImagen.Add(imagenEntity);
 
-                    return Json(new { mensaje = "Guardado correctamente", ok = true });
+                    // Actualizar referencia en el producto (la entidad model está siendo rastreada por el mismo contexto)
+                    model.Imagen = imagenEntity.NombreArchivo;
                 }
-                else
+
+                // 3️⃣ Guardar todo de una sola vez (producto ya fue guardado por el servicio, aquí se guardan cambios de imagen / referencia)
+                await _context.SaveChangesAsync();
+
+                return Json(new
                 {
-                    // Si no se sube imagen, se sigue la lógica original de guardado/actualización
-                    // usando el modelo que viene del formulario.
-                    await _productoService.Guardar(model);
-                    return Json(new { mensaje = "Guardado correctamente", ok = true });
-                }
+                    ok = true,
+                    mensaje = esNuevo ? "Producto creado correctamente" : "Producto actualizado correctamente"
+                });
             }
-            // <-- Cierra el bloque try, y aquí empieza el catch -->
             catch (Exception ex)
             {
-                return BadRequest(new { mensaje = "Error: " + ex.Message });
+                return StatusCode(500, new
+                {
+                    ok = false,
+                    mensaje = "Error al guardar el producto",
+                    detalle = ex.Message
+                });
             }
         }
 
@@ -116,7 +172,6 @@ namespace UI.Areas.Producto.Controllers
         public async Task<IActionResult> ListarProductos()
         {
             return View();
-
         }
 
         [HttpGet]
@@ -149,10 +204,16 @@ namespace UI.Areas.Producto.Controllers
         {
             try
             {
-                var estados = _context.ProductoView
-                 .Select(v => new { id = v.estadoId, nombre = v.estadoNombre })
-                 .Distinct()
-                 .ToList();
+                int[] estadosId = { 1, 2 }; // IDs permitidos
+
+                var estados = _context.Estados
+                    .Where(e => estadosId.Contains(e.Id))
+                    .OrderBy(e => e.Nombre)
+                    .Select(e => new {
+                        id = e.Id,
+                        nombre = e.Nombre
+                    })
+                    .ToList();
 
                 return Json(estados);
             }
@@ -162,7 +223,5 @@ namespace UI.Areas.Producto.Controllers
             }
         }
 
-
     }
 }
-

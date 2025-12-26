@@ -65,17 +65,21 @@
 }
 
 /* Cliente */
-#btn-cliente {
+/*#btn-cliente {
     grid-column: 1 / 2;
     grid-row: 1 / 2;
-}
+}*/
 
 /* Pagar */
 #btn-pagar {
     grid-column: 1 / 2;
-    grid-row: 2 / 5;
-    height: 200px;
+    grid-row: 1 / 5; /* Ocupa todas las filas de la columna 1 */
+    height: 100%;
     padding: 15px 20px;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* Borrar / Limpiar / Punto */

@@ -45,6 +45,11 @@
                 </button>
             </div>
 
+            <!-- Botón para abrir el modal de comandos -->
+            <button type="button" class="btn btn-link px-2" id="btn-comandos" title="Ver comandos rápidos" data-bs-toggle="modal" data-bs-target="#modalComandos">
+                <i class="ti ti-info-circle fs-4 text-info"></i>
+            </button>
+
             <!-- Light/Dark Mode Button -->
             <div class="topbar-item d-none d-sm-flex">
                 <button class="topbar-link" id="light-dark-mode" type="button">
@@ -69,7 +74,7 @@
                             <i class="ti ti-user-circle me-2 fs-17 align-middle"></i>
                             <span class="align-middle">Profile</span>
                         </a>
-                        <hr/>
+                        <hr />
                         <!-- Logout -->
                         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
                             <button type="submit" class="dropdown-item text-danger fw-semibold" style="background:none; border:none; width:100%; text-align:left;">
@@ -83,5 +88,79 @@
             </div>
         </div>
     </div>
+   
 </header>
-<!-- Topbar End -->
+
+<!-- Modal de Comandos Rápidos -->
+<div class="modal fade" id="modalComandos" tabindex="-1" aria-labelledby="modalComandosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalComandosLabel">
+                    <i class="ti ti-keyboard fs-4 text-primary"></i> Comandos rápidos del sistema
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="ti ti-arrow-right text-secondary"></i>
+                                <kbd>Tab</kbd>/<kbd>Shift+Tab</kbd> <span class="text-muted">Mover foco en venta</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-edit text-info"></i>
+                                <kbd>Enter</kbd> o <kbd>E</kbd> <span class="text-muted">Editar producto</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-device-floppy text-success"></i>
+                                <kbd>Ctrl</kbd>+<kbd>S</kbd> <span class="text-muted">Guardar edición</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-trash text-danger"></i>
+                                <kbd>Delete</kbd> <span class="text-muted">Eliminar producto</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-plus text-success"></i>
+                                <kbd>+</kbd> <span class="text-muted">Sumar cantidad</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-minus text-warning"></i>
+                                <kbd>-</kbd> <span class="text-muted">Restar cantidad</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="ti ti-brush text-secondary"></i>
+                                <kbd>Ctrl</kbd>+<kbd>L</kbd> <span class="text-muted">Limpiar venta</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-search text-primary"></i>
+                                <kbd>Ctrl</kbd>+<kbd>F</kbd> o <kbd>F2</kbd> <span class="text-muted">Buscar producto</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-info-circle text-info"></i>
+                                <kbd>Ctrl</kbd>+<kbd>I</kbd> <span class="text-muted">Ver comandos</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="ti ti-x text-danger"></i>
+                                <kbd>Esc</kbd> <span class="text-muted">Cancelar edición</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.getElementById('btn-comandos')?.addEventListener('click', function() {
+            var modal = new bootstrap.Modal(document.getElementById('modalComandos'));
+            modal.show();
+        });
+    </script>
+}

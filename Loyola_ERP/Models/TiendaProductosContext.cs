@@ -17,6 +17,8 @@ public partial class TiendaProductosContext : DbContext
 
     public virtual DbSet<Estados> Estados { get; set; }
 
+    public virtual DbSet<ProductoImagen> ProductoImagen { get; set; }
+
     public virtual DbSet<ProductoView> ProductoView { get; set; }
 
     public virtual DbSet<Productos> Productos { get; set; }
@@ -63,6 +65,26 @@ public partial class TiendaProductosContext : DbContext
             entity.Property(e => e.Nombre)
                 .IsRequired()
                 .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<ProductoImagen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC077AF10589");
+
+            entity.ToTable("ProductoImagen", "Producto");
+
+            entity.Property(e => e.Contenido).IsRequired();
+            entity.Property(e => e.ContentType)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.CreadoEn).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.NombreArchivo)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.HasOne(d => d.Producto).WithMany(p => p.ProductoImagen)
+                .HasForeignKey(d => d.ProductoId)
+                .HasConstraintName("FK_ProductoImagen_Productos");
         });
 
         modelBuilder.Entity<ProductoView>(entity =>

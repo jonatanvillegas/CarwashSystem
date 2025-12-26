@@ -22,4 +22,6 @@ public partial class Productos
     public string Imagen { get; set; }
 
     public virtual Estados Estado { get; set; }
+
+    public virtual ICollection<ProductoImagen> ProductoImagen { get; set; } = new List<ProductoImagen>();
 }
