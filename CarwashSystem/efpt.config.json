@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "TiendaProductosContext",
+   "ContextClassName": "CarwashSystemContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
@@ -16,23 +16,55 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[Producto].[Estados]",
+         "Name": "[cat].[Marcas]",
          "ObjectType": 0
       },
       {
-         "Name": "[Producto].[ProductoImagen]",
+         "Name": "[cat].[Modelos]",
          "ObjectType": 0
       },
       {
-         "Name": "[Producto].[Productos]",
+         "Name": "[cat].[Productos]",
          "ObjectType": 0
       },
       {
-         "Name": "[Usuarios].[DatosGeneralesUsuarios]",
+         "Name": "[cat].[Servicios]",
          "ObjectType": 0
       },
       {
-         "Name": "[Producto].[ProductoView]",
+         "Name": "[cat].[TiposVehiculo]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[Caja]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[CajaMovimiento]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[HistorialCierre]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[Lavados]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[LavadoServicios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[Venta]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[VentaDetalle]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[op].[Lavados_View]",
          "ObjectType": 3
       }
    ],

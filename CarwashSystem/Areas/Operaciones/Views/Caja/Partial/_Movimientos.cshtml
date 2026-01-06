@@ -1,0 +1,23 @@
+﻿@model IEnumerable<UI.Models.CajaMovimiento>
+<h5 class="mb-3"><i class="bi bi-list-ul"></i> Movimientos de Caja</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Referencia</th>
+            <th>Monto</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>@m.Fecha.ToString("g")</td>
+                <td>@m.TipoMovimiento</td>
+                <td>@m.ReferenciaId</td>
+                <td>@m.Monto.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>

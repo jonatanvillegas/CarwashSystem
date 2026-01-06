@@ -1,0 +1,90 @@
+﻿@model UI.Models.Caja
+@{
+    ViewData["Title"] = "Caja Actual";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
+
+<div class="container py-4">
+    <h2 class="fw-bold text-primary mb-4"><i class="bi bi-cash-stack"></i> Caja Actual</h2>
+    @if (Model == null)
+    {
+        <div class="alert alert-info">No hay caja abierta.</div>
+        <button class="btn btn-success rounded-pill" id="btnApertura">
+            <i class="bi bi-box-arrow-in-down"></i> Abrir Caja
+        </button>
+    }
+    else
+    {
+        <div class="row mb-3">
+            <div class="col-md-3"><b>Fecha Apertura:</b> @Model.FechaApertura.ToString("g")</div>
+            <div class="col-md-3"><b>Monto Inicial:</b> @Model.MontoInicial.ToString("C")</div>
+            <div class="col-md-3"><b>Total Lavados:</b> @Model.TotalLavados.ToString("C")</div>
+            <div class="col-md-3"><b>Total Ventas:</b> @Model.TotalVentas.ToString("C")</div>
+        </div>
+        <div class="mb-2"><b>Total Ingresos:</b> <span class="text-success fw-bold">@Model.TotalIngresos?.ToString("C")</span></div>
+        <button class="btn btn-danger rounded-pill" id="btnCierre">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Caja
+        </button>
+        <hr />
+        <div id="movimientosCaja"></div>
+    }
+</div>
+
+<!-- Modal para apertura/cierre -->
+<div class="modal fade" id="modalCaja" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title" id="modalCajaLabel"></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalCajaBody"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
+    <script>
+        // Abrir caja
+        $('#btnApertura').click(function () {
+            $.get('@Url.Action("Apertura")', function (html) {
+                $('#modalCajaBody').html(html);
+                $('#modalCajaLabel').text('Apertura de Caja');
+                var modal = new bootstrap.Modal(document.getElementById('modalCaja'));
+                modal.show();
+            });
+        });
+
+        // Cerrar caja
+        $('#btnCierre').click(function () {
+            Swal.fire({
+                title: 'Cerrar caja',
+                text: '¿Deseas cerrar la caja?',
+                input: 'number',
+                inputLabel: 'Monto final contado',
+                inputAttributes: { min: 0, step: 0.01 },
+                showCancelButton: true,
+                confirmButtonText: 'Cerrar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    $.post('@Url.Action("Cierre")', { montoCierre: result.value }, function (r) {
+                        if (r.success) location.reload();
+                        else Swal.fire('Error', r.message, 'error');
+                    });
+                }
+            });
+        });
+
+        // Cargar movimientos
+        @if (Model != null)
+        {
+                <text>
+                $(function () {
+                    $('#movimientosCaja').load('@Url.Action("Movimientos")');
+                });
+                </text>
+        }
+    </script>
+}

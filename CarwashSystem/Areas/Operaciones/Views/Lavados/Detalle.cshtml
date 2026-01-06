@@ -1,0 +1,160 @@
+﻿@model UI.Models.Lavados_View
+@{
+    var serviciosLavado = ViewBag.Servicios as List<UI.Models.LavadoServicios>;
+    var catalogo = ViewBag.ServiciosCatalogo as List<UI.Models.Servicios>;
+    bool esPendiente = Model.Estado == "PENDIENTE";
+    var serviciosAgregados = serviciosLavado.Select(x => x.ServicioId).ToList();
+    var serviciosDisponibles = catalogo.Where(s => !serviciosAgregados.Contains(s.Id)).ToList();
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
+
+<div class="container py-4">
+    <h2 class="fw-bold text-info mb-3"><i class="bi bi-droplet"></i> Detalle de Lavado</h2>
+    <div class="row mb-2">
+        <div class="col-md-3"><b>Placa:</b> @Model.Placa</div>
+        <div class="col-md-3"><b>Tipo:</b> @Model.TipoVehiculo</div>
+        <div class="col-md-3"><b>Marca:</b> @Model.Marca</div>
+        <div class="col-md-3"><b>Modelo:</b> @Model.Modelo</div>
+    </div>
+    <div class="mb-2"><b>Fecha:</b> @Model.FechaRegistro.ToString("g")</div>
+    <hr />
+    <h5>Servicios</h5>
+    @if (esPendiente && serviciosDisponibles.Any())
+    {
+        <form id="formAgregarServicio" method="post" action="@Url.Action("AgregarServicio")" class="mb-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="LavadoId" value="@Model.Id" />
+            <div class="row g-2 align-items-end">
+                <div class="col-auto">
+                    <select class="form-control rounded-pill" name="ServicioId" required>
+                        <option value="">Agregar servicio...</option>
+                        @foreach (var s in serviciosDisponibles)
+                        {
+                            <option value="@s.Id">@s.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success btn-sm rounded-pill">
+                        <i class="bi bi-plus-circle"></i> Agregar
+                    </button>
+                </div>
+            </div>
+        </form>
+    }
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Servicio</th>
+                <th>Precio</th>
+                @if (esPendiente)
+                {
+                    <th>Acciones</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in serviciosLavado)
+            {
+                <tr>
+                    <td>@s.Servicio?.Nombre</td>
+                    <td>
+                        @if (esPendiente)
+                        {
+                            <input type="number" class="form-control form-control-sm precio-servicio" data-id="@s.Id" value="@(s.Precio ?? 0)" min="0" step="0.01" />
+                        }
+                        else
+                        {
+                            @s.Precio?.ToString("C")
+                        }
+                    </td>
+                    @if (esPendiente)
+                    {
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm btnGuardarPrecio" data-id="@s.Id">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <div class="mb-2"><b>Total:</b> <span id="totalLavado">@serviciosLavado.Sum(x => x.Precio ?? 0).ToString("C")</span></div>
+    @if (esPendiente)
+    {
+        <button class="btn btn-success rounded-pill" id="btnCompletar" data-id="@Model.Id">
+            <i class="bi bi-check-circle"></i> Completar Lavado
+        </button>
+    }
+    else
+    {
+        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Completado</span>
+        <div class="mt-2"><b>Fecha cierre:</b> @Model.FechaCierre?.ToString("g")</div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
+    <script>
+
+        // Agregar servicio
+        $('#formAgregarServicio').submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.post(url, form.serialize(), function (result) {
+                if (result.success) {
+                    Swal.fire('Servicio agregado', '', 'success').then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', result.message, 'error');
+                }
+            });
+        });
+
+        // Guardar precio y actualizar total dinámicamente
+        $('.btnGuardarPrecio').click(function () {
+            var id = $(this).data('id');
+            var precio = $('.precio-servicio[data-id="' + id + '"]').val();
+            $.post('@Url.Action("EditarPrecio")', { id: id, precio: precio }, function (result) {
+                if (result.success) {
+                    Swal.fire('Precio actualizado', '', 'success');
+                    calcularTotal();
+                } else {
+                    Swal.fire('Error', result.message, 'error');
+                }
+            });
+        });
+
+        $('.precio-servicio').on('input', function () {
+            calcularTotal();
+        });
+
+        function calcularTotal() {
+            var total = 0;
+            $('.precio-servicio').each(function () {
+                var val = parseFloat($(this).val()) || 0;
+                total += val;
+            });
+            $('#totalLavado').text(total.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }));
+        }
+
+        $('#btnCompletar').click(function () {
+            var id = $(this).data('id');
+            $.post('@Url.Action("Completar")', { id: id }, function (result) {
+                if (result.success) {
+                    Swal.fire('Lavado completado', '', 'success').then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', result.message, 'error');
+                }
+            });
+        });
+    </script>
+}

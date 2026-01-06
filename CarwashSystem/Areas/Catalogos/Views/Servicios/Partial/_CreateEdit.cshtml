@@ -1,0 +1,30 @@
+﻿@model UI.Models.Servicios
+
+<form id="formServicio" method="post" action="@(
+                                      Model.Id == 0 ? Url.Action("Create") : Url.Action("Edit")
+)">
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" name="Id" value="@Model.Id" />
+    }
+    <div class="mb-3">
+        <label for="Nombre" class="form-label fw-semibold">
+            <i class="bi bi-gear"></i> Nombre
+        </label>
+        <input type="text" class="form-control rounded-pill" id="Nombre" name="Nombre" value="@Model.Nombre" required maxlength="100" />
+    </div>
+    <div class="mb-3">
+        <label for="Descripcion" class="form-label fw-semibold">
+            <i class="bi bi-card-text"></i> Descripción
+        </label>
+        <input type="text" class="form-control rounded-pill" id="Descripcion" name="Descripcion" value="@Model.Descripcion" maxlength="250" />
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+        <button type="submit" class="btn btn-success rounded-pill shadow">
+            <i class="bi bi-save"></i> Guardar
+        </button>
+        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+    </div>
+</form>

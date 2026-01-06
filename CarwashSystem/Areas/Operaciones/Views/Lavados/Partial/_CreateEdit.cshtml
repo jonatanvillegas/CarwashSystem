@@ -1,0 +1,109 @@
+﻿@model UI.Models.Lavados
+@{
+    var tipos = ViewBag.TiposVehiculo as List<UI.Models.TiposVehiculo>;
+    // Las marcas y modelos iniciales pueden estar vacíos, se llenan por AJAX
+}
+<form id="formLavado" method="post" action="@Url.Action("Create")">
+    @Html.AntiForgeryToken()
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="TipoVehiculoId" class="form-label fw-semibold"><i class="bi bi-truck"></i> Tipo de Vehículo</label>
+            <select class="form-control rounded-pill" id="TipoVehiculoId" name="TipoVehiculoId" required>
+                <option value="">Seleccione...</option>
+                @foreach (var t in tipos)
+                {
+                    <option value="@t.Id">@t.Nombre</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="MarcaId" class="form-label fw-semibold"><i class="bi bi-tag"></i> Marca</label>
+            <select class="form-control rounded-pill" id="MarcaId" name="MarcaId" required>
+                <option value="">Seleccione un tipo de vehículo primero...</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="ModeloId" class="form-label fw-semibold"><i class="bi bi-car-front"></i> Modelo</label>
+            <select class="form-control rounded-pill" id="ModeloId" name="ModeloId" required>
+                <option value="">Seleccione una marca primero...</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="Placa" class="form-label fw-semibold"><i class="bi bi-123"></i> Placa</label>
+            <input type="text" class="form-control rounded-pill" id="Placa" name="Placa" maxlength="20" />
+        </div>
+        <div class="col-12">
+            <label class="form-label fw-semibold"><i class="bi bi-gear"></i> Servicios a realizar</label>
+            <div class="row">
+                @foreach (var s in ViewBag.Servicios as List<UI.Models.Servicios>)
+                {
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="serviciosSeleccionados" value="@s.Id" id="servicio_@s.Id" />
+                            <label class="form-check-label" for="servicio_@s.Id">@s.Nombre</label>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="submit" class="btn btn-info rounded-pill shadow">
+            <i class="bi bi-save"></i> Guardar
+        </button>
+        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+    </div>
+</form>
+<script>
+    // Cargar marcas según tipo de vehículo
+    $('#TipoVehiculoId').change(function () {
+        var tipoId = $(this).val();
+        var $marca = $('#MarcaId');
+        var $modelo = $('#ModeloId');
+        $marca.html('<option value="">Cargando...</option>');
+        $modelo.html('<option value="">Seleccione una marca primero...</option>');
+        if (tipoId) {
+            $.get('/Catalogos/Marcas/GetByTipoVehiculo', { tipoVehiculoId: tipoId }, function (data) {
+                $marca.empty().append('<option value="">Seleccione...</option>');
+                $.each(data, function (i, m) {
+                    $marca.append('<option value="' + m.id + '">' + m.nombre + '</option>');
+                });
+            });
+        } else {
+            $marca.html('<option value="">Seleccione un tipo de vehículo primero...</option>');
+        }
+    });
+
+    // Cargar modelos según marca
+    $('#MarcaId').change(function () {
+        var marcaId = $(this).val();
+        var $modelo = $('#ModeloId');
+        $modelo.html('<option value="">Cargando...</option>');
+        if (marcaId) {
+            $.get('/Catalogos/Modelos/GetByMarca', { marcaId: marcaId }, function (data) {
+                $modelo.empty().append('<option value="">Seleccione...</option>');
+                $.each(data, function (i, m) {
+                    $modelo.append('<option value="' + m.id + '">' + m.nombre + '</option>');
+                });
+            });
+        } else {
+            $modelo.html('<option value="">Seleccione una marca primero...</option>');
+        }
+    });
+
+    // Envío del formulario
+    $('#formLavado').submit(function (e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        $.post(url, form.serialize(), function (result) {
+            if (result.success) {
+                location.reload();
+            } else {
+                $('#modalLavadoBody').html(result);
+            }
+        });
+    });
+</script>
