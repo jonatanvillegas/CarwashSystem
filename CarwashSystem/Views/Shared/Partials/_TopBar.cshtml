@@ -5,7 +5,7 @@
             <!-- Topbar Brand Logo -->
             <div class="logo-topbar">
                 <!-- Logo light -->
-                <a href=@Url.Action("Index1", "Dashboards") class="logo-light">
+                <a href=@Url.Action("Index", "Wellcome", new {area = "Home"}) class="logo-light">
                     <span class="logo-lg">
                         <img src="~/images/logo.png" alt="logo">
                     </span>
@@ -38,12 +38,12 @@
 
         <div class="d-flex align-items-center gap-2">
 
-            <!-- Button Trigger Customizer Offcanvas -->
+            @* <!-- Button Trigger Customizer Offcanvas -->
             <div class="topbar-item d-none d-sm-flex">
                 <button class="topbar-link" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" type="button">
                     <i data-lucide="settings" class="fs-xxl"></i>
                 </button>
-            </div>
+            </div> *@
 
             <!-- Light/Dark Mode Button -->
             <div class="topbar-item d-none d-sm-flex">
@@ -65,11 +65,11 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- My Profile -->
-                        <a href=@Url.Action("Profile", "Pages") class="dropdown-item">
+                        @* <a href=@Url.Action("Profile", "Pages") class="dropdown-item">
                             <i class="ti ti-user-circle me-2 fs-17 align-middle"></i>
                             <span class="align-middle">Profile</span>
                         </a>
-                        <hr />
+                        <hr /> *@
                         <!-- Logout -->
                         <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
                             <button type="submit" class="dropdown-item text-danger fw-semibold" style="background:none; border:none; width:100%; text-align:left;">

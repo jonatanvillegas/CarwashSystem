@@ -18,6 +18,7 @@ public partial class CarwashSystemContext : DbContext
     public virtual DbSet<CajaMovimiento> CajaMovimiento { get; set; }
 
     public virtual DbSet<HistorialCierre> HistorialCierre { get; set; }
+
     public virtual DbSet<LavadoServicios> LavadoServicios { get; set; }
 
     public virtual DbSet<Lavados> Lavados { get; set; }

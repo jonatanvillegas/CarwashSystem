@@ -72,20 +72,20 @@
                                                 @Html.DisplayNameFor(m => m.Input.RememberMe)
                                             </label>
                                         </div>
-                                        <a asp-page="./ForgotPassword" class="text-decoration-underline link-offset-3 text-muted">¿Olvidaste tu contraseña?</a>
+                                        @* <a asp-page="./ForgotPassword" class="text-decoration-underline link-offset-3 text-muted">¿Olvidaste tu contraseña?</a> *@
                                     </div>
 
                                     <div class="d-grid">
                                         <button id="login-submit" type="submit" class="btn btn-primary fw-semibold py-2">Iniciar sesión</button>
                                     </div>
                                 </form>
-
+@* 
                                 <p class="text-muted text-center mt-4 mb-0">
                                     ¿Eres nuevo? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-decoration-underline link-offset-3 fw-semibold">Crea una cuenta</a>
-                                </p>
+                                </p> *@
 
                                 <p class="text-center text-muted mt-4 mb-0">
-                                    <script>document.write(new Date().getFullYear())</script> ERP Loyola<span class="fw-semibold"> Equipo de desarrollo</span>
+                                    <script>document.write(new Date().getFullYear())</script> CarwashSystem<span class="fw-semibold"> Equipo de desarrollo</span>
                                 </p>
                             </div>
                         </div>

@@ -34,38 +34,43 @@
             </div>
         </div>
         <!-- Columna derecha: Detalle de venta -->
-        <div class="col-lg-6 col-md-12 mb-3">
-            <h5 class="mb-3"><i class="bi bi-receipt"></i> Detalle de Venta</h5>
-            <table class="table table-bordered" id="tablaVenta">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Precio</th>
-                        <th>Cantidad</th>
-                        <th>Subtotal</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label class="form-label">Total</label>
-                    <input type="text" class="form-control" id="totalVenta" readonly value="0" />
+                <div class="col-lg-6 col-md-12 mb-3">
+        <div class="card">
+            <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-receipt"></i> Detalle de Venta</h5>
+                    <table class="table table-bordered" id="tablaVenta">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="row mb-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Total</label>
+                            <input type="text" class="form-control" id="totalVenta" readonly value="0" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pago</label>
+                            <input type="number" class="form-control" id="pagoVenta" min="0" step="0.01" value="0" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Vuelto</label>
+                            <input type="text" class="form-control" id="vueltoVenta" readonly value="0" />
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-success rounded-pill" id="btnConfirmarVenta" @(cajaAbierta ? "" : "disabled")>
+                            <i class="bi bi-cash"></i> Confirmar Venta
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Pago</label>
-                    <input type="number" class="form-control" id="pagoVenta" min="0" step="0.01" value="0" />
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Vuelto</label>
-                    <input type="text" class="form-control" id="vueltoVenta" readonly value="0" />
-                </div>
-            </div>
-            <div class="d-flex justify-content-end gap-2">
-                <button class="btn btn-success rounded-pill" id="btnConfirmarVenta" @(cajaAbierta ? "" : "disabled")>
-                    <i class="bi bi-cash"></i> Confirmar Venta
-                </button>
             </div>
         </div>
     </div>
@@ -76,106 +81,132 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
     <script>
 
-            let venta = [];
+        let venta = [];
 
-            // Agregar producto
-            $('.btnAgregar').click(function () {
-                let card = $(this).closest('.producto-card');
-                let id = card.data('id');
-                let nombre = card.data('nombre');
-                let precio = parseFloat(card.data('precio'));
-                let existente = venta.find(x => x.ProductoId === id);
-                if (existente) {
-                    existente.Cantidad += 1;
-                } else {
-                    venta.push({ ProductoId: id, Nombre: nombre, Precio: precio, Cantidad: 1 });
-                }
-                renderVenta();
-            });
-
-            // Cambiar cantidad
-            $(document).on('input', '.cantidad-input', function () {
-                let id = parseInt($(this).data('id'));
-                let cantidad = parseInt($(this).val()) || 1;
-                let item = venta.find(x => x.ProductoId === id);
-                if (item) {
-                    item.Cantidad = cantidad;
-                    renderVenta();
-                }
-            });
-
-            // Eliminar producto
-            $(document).on('click', '.btnEliminar', function () {
-                let id = parseInt($(this).data('id'));
-                venta = venta.filter(x => x.ProductoId !== id);
-                renderVenta();
-            });
-
-            // Calcular total y vuelto
-            $('#pagoVenta').on('input', function () {
-                calcularVuelto();
-            });
-
-            function renderVenta() {
-                let tbody = $('#tablaVenta tbody');
-                tbody.empty();
-                let total = 0;
-                venta.forEach(item => {
-                    let subtotal = item.Precio * item.Cantidad;
-                    total += subtotal;
-                    tbody.append(`
-        <tr>
-            <td>${item.Nombre}</td>
-            <td>${item.Precio.toFixed(2)}</td>
-            <td><input type="number" class="form-control cantidad-input" data-id="${item.ProductoId}" min="1" value="${item.Cantidad}" /></td>
-            <td>${subtotal.toFixed(2)}</td>
-            <td><button class="btn btn-danger btn-sm btnEliminar" data-id="${item.ProductoId}"><i class="bi bi-trash"></i></button></td>
-        </tr>
-                    `);
-                });
-                $('#totalVenta').val(total.toFixed(2));
-                calcularVuelto();
+        // Agregar producto
+        $('.btnAgregar').click(function () {
+            let card = $(this).closest('.producto-card');
+            let id = card.data('id');
+            let nombre = card.data('nombre');
+            let precio = parseFloat(card.data('precio'));
+            let existente = venta.find(x => x.ProductoId === id);
+            if (existente) {
+                existente.Cantidad += 1;
+            } else {
+                venta.push({ ProductoId: id, Nombre: nombre, Precio: precio, Cantidad: 1 });
             }
+            renderVenta();
+        });
 
-            function calcularVuelto() {
-                let total = parseFloat($('#totalVenta').val()) || 0;
-                let pago = parseFloat($('#pagoVenta').val()) || 0;
-                let vuelto = pago - total;
-                $('#vueltoVenta').val(vuelto >= 0 ? vuelto.toFixed(2) : '0.00');
+        // Cambiar cantidad
+        $(document).on('input', '.cantidad-input', function () {
+            let id = parseInt($(this).data('id'));
+            let cantidad = parseInt($(this).val()) || 1;
+            let item = venta.find(x => x.ProductoId === id);
+            if (item) {
+                item.Cantidad = cantidad;
+                renderVenta();
             }
+        });
 
-            // Confirmar venta
-            $('#btnConfirmarVenta').click(function () {
-                let total = parseFloat($('#totalVenta').val()) || 0;
-                let pago = parseFloat($('#pagoVenta').val()) || 0;
-                let vuelto = parseFloat($('#vueltoVenta').val()) || 0;
-                if (venta.length === 0) {
-                    Swal.fire('Error', 'Agrega al menos un producto.', 'error');
-                    return;
-                }
-                if (pago < total) {
-                    Swal.fire('Error', 'El pago debe ser igual o mayor al total.', 'error');
-                    return;
-                }
-                let productos = venta.map(x => ({ ProductoId: x.ProductoId, Cantidad: x.Cantidad }));
-                $.ajax({
-                    url: '@Url.Action("RegistrarVenta")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ Productos: productos, Total: total, Pago: pago, Vuelto: vuelto }),
-                    success: function (result) {
-                        if (result.success) {
-                            Swal.fire('Venta registrada', '', 'success').then(() => {
-                                venta = [];
-                                renderVenta();
-                                $('#pagoVenta').val('0');
-                                $('#vueltoVenta').val('0');
-                            });
-                        } else {
-                            Swal.fire('Error', result.message, 'error');
-                        }
+        // Aumentar cantidad
+        $(document).on('click', '.btnMas', function () {
+            let id = parseInt($(this).data('id'));
+            let item = venta.find(x => x.ProductoId === id);
+            if (item) {
+                item.Cantidad += 1;
+                renderVenta();
+            }
+        });
+
+        // Disminuir cantidad (mínimo 1)
+        $(document).on('click', '.btnMenos', function () {
+            let id = parseInt($(this).data('id'));
+            let item = venta.find(x => x.ProductoId === id);
+            if (item && item.Cantidad > 1) {
+                item.Cantidad -= 1;
+                renderVenta();
+            }
+        });
+
+        // Eliminar producto
+        $(document).on('click', '.btnEliminar', function () {
+            let id = parseInt($(this).data('id'));
+            venta = venta.filter(x => x.ProductoId !== id);
+            renderVenta();
+        });
+
+        // Calcular total y vuelto
+        $('#pagoVenta').on('input', function () {
+            calcularVuelto();
+        });
+
+        function renderVenta() {
+            let tbody = $('#tablaVenta tbody');
+            tbody.empty();
+            let total = 0;
+            venta.forEach(item => {
+                let subtotal = item.Precio * item.Cantidad;
+                total += subtotal;
+                tbody.append(`
+                    <tr>
+                        <td>${item.Nombre}</td>
+                        <td>${item.Precio.toFixed(2)}</td>
+                        <td class="text-center">
+                            <div class="input-group input-group-sm justify-content-center">
+                                <button type="button" class="btn btn-outline-secondary btnMenos" data-id="${item.ProductoId}"><i class="bi bi-dash"></i></button>
+                                <span class="input-group-text bg-white border-0 fw-bold" style="min-width:2.5em;">${item.Cantidad}</span>
+                                <button type="button" class="btn btn-outline-secondary btnMas" data-id="${item.ProductoId}"><i class="bi bi-plus"></i></button>
+                            </div>
+                        </td>
+                        <td>${subtotal.toFixed(2)}</td>
+                        <td><button class="btn btn-danger btn-sm btnEliminar" data-id="${item.ProductoId}"><i class="bi bi-trash"></i></button></td>
+                    </tr>
+                `);
+            });
+            $('#totalVenta').val(total.toFixed(2));
+            calcularVuelto();
+        }
+
+        function calcularVuelto() {
+            let total = parseFloat($('#totalVenta').val()) || 0;
+            let pago = parseFloat($('#pagoVenta').val()) || 0;
+            let vuelto = pago - total;
+            $('#vueltoVenta').val(vuelto >= 0 ? vuelto.toFixed(2) : '0.00');
+        }
+
+        // Confirmar venta
+        $('#btnConfirmarVenta').click(function () {
+            let total = parseFloat($('#totalVenta').val()) || 0;
+            let pago = parseFloat($('#pagoVenta').val()) || 0;
+            let vuelto = parseFloat($('#vueltoVenta').val()) || 0;
+            if (venta.length === 0) {
+                Swal.fire('Error', 'Agrega al menos un producto.', 'error');
+                return;
+            }
+            if (pago < total) {
+                Swal.fire('Error', 'El pago debe ser igual o mayor al total.', 'error');
+                return;
+            }
+            let productos = venta.map(x => ({ ProductoId: x.ProductoId, Cantidad: x.Cantidad }));
+            $.ajax({
+                url: '@Url.Action("RegistrarVenta")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ Productos: productos, Total: total, Pago: pago, Vuelto: vuelto }),
+                success: function (result) {
+                    if (result.success) {
+                        Swal.fire('Venta registrada', '', 'success').then(() => {
+                            venta = [];
+                            renderVenta();
+                            $('#pagoVenta').val('0');
+                            $('#vueltoVenta').val('0');
+                        });
+                    } else {
+                        Swal.fire('Error', result.message, 'error');
                     }
-                });
+                }
             });
+        });
     </script>
 }

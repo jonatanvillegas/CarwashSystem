@@ -575,7 +575,7 @@ class LayoutCustomizer {
 
     changeSkin(skin) {
         this.config.skin = skin;
-        this.html.setAttribute("data-skin", skin);
+        this.html.setAttribute("data-skin", "material");
         this.applyPreset(skin); // demo only
         this.setSwitchFromConfig();
     }
@@ -660,7 +660,7 @@ class LayoutCustomizer {
         toggle('input[name="sidebar-user"]', config.sidenav.user === true);
 
         [
-            ["data-skin", config.skin],
+            ["data-skin", "material"],
             ["data-bs-theme", config.theme],
             ["data-layout-position", config.layout.position],
             ["data-topbar-color", config.topbar.color],
@@ -683,7 +683,7 @@ class LayoutCustomizer {
 
         // Bind theme and layout related radios
         bindChange('input[name="data-skin"]', (input) =>
-            this.changeSkin(input.value)
+            this.changeSkin("material")
         );
         bindChange('input[name="data-menu-color"]', (input) =>
             this.changeMenuColor(input.value)

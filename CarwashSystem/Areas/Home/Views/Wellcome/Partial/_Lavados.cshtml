@@ -1,0 +1,33 @@
+﻿@using UI.Models
+@model List<Lavados_View>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning">
+        No hay datos disponibles.
+    </div>
+}
+else
+{
+    <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th style="border-bottom: 2px solid #ccc; border-top: none; border-left: none; border-right: none; padding: 8px;">Marca</th>
+                <th style="border-bottom: 2px solid #ccc; border-top: none; border-left: none; border-right: none; padding: 8px;">Modelo</th>
+                <th style="border-bottom: 2px solid #ccc; border-top: none; border-left: none; border-right: none; padding: 8px;">Placa</th>
+                <th style="border-bottom: 2px solid #ccc; border-top: none; border-left: none; border-right: none; padding: 8px;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="border-bottom: 1px solid #eee; border-top: none; border-left: none; border-right: none; padding: 8px;">@item.Marca</td>
+                    <td style="border-bottom: 1px solid #eee; border-top: none; border-left: none; border-right: none; padding: 8px;">@item.Modelo</td>
+                    <td style="border-bottom: 1px solid #eee; border-top: none; border-left: none; border-right: none; padding: 8px;">@item.Placa</td>
+                    <td style="border-bottom: 1px solid #eee; border-top: none; border-left: none; border-right: none; padding: 8px;">@item.Total.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

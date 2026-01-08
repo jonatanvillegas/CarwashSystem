@@ -66,6 +66,14 @@
       {
          "Name": "[op].[Lavados_View]",
          "ObjectType": 3
+      },
+      {
+         "Name": "[op].[sp_Dashboard]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[op].[sp_ProductosMasVendidos]",
+         "ObjectType": 1
       }
    ],
    "UiHint": null,

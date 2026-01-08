@@ -2,7 +2,7 @@
 <div class="sidenav-menu">
 
     <!-- Brand Logo -->
-    <a href=@Url.Action("Index1", "Dashboards") class="logo">
+    <a href=@Url.Action("Index", "Wellcome",new {area = "Home"}) class="logo">
         <span class="logo logo-light">
             <span class="logo-lg"><img src="~/images/logo.png" alt="logo"></span>
             <span class="logo-sm"><img src="~/images/logo-sm.png" alt="small logo"></span>
@@ -29,7 +29,12 @@
         <ul class="side-nav">
             <li class="side-nav-title" data-lang="menu-title">Menu</li>
 
-            
+            <li class="side-nav-item">
+                <a href="@Url.Action("Index", "Wellcome", new { area = "Home" })" class="side-nav-link">
+                    <span class="menu-icon"><i class="ti ti-home"></i></span>
+                    <span class="menu-text">Inicio</span>
+                </a>
+            </li>
             <li class="side-nav-item">
                 <a href="@Url.Action("Index", "Lavados", new { area = "Operaciones" })" class="side-nav-link">
                     <span class="menu-icon"><i class="ti ti-droplet"></i></span>

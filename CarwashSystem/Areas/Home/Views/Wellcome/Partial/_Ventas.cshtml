@@ -1,0 +1,31 @@
+﻿@using UI.Models
+@model List<sp_ProductosMasVendidosResult>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning">
+        No hay datos disponibles.
+    </div>
+}
+else
+{
+    <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr>
+                <th style="border-bottom: 2px solid #ccc; border-top: none; border-left: none; border-right: none; padding: 8px;">Nombre</th>
+                <th style="border-bottom: 2px solid #ccc; border-top: none; border-left: none; border-right: none; padding: 8px;">Cantidad Vendida</th>
+                <th style="border-bottom: 2px solid #ccc; border-top: none; border-left: none; border-right: none; padding: 8px;">Ventas Totales</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="border-bottom: 1px solid #eee; border-top: none; border-left: none; border-right: none; padding: 8px;">@item.Nombre</td>
+                    <td style="border-bottom: 1px solid #eee; border-top: none; border-left: none; border-right: none; padding: 8px;">@item.CantidadVendida</td>
+                    <td style="border-bottom: 1px solid #eee; border-top: none; border-left: none; border-right: none; padding: 8px;">@item.TotalVendido?.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

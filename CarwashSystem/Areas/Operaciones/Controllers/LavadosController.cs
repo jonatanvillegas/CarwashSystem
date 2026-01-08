@@ -126,8 +126,8 @@ namespace UI.Areas.Operaciones.Controllers
             try
             {
                 await _context.Database.ExecuteSqlRawAsync(
-                    "EXEC op.sp_CompletarLavado @LavadoId={0}, @CajaId={1}",
-                    id, cajaAbierta.CajaId
+                    "EXEC op.sp_CompletarLavado @LavadoId={0}, @CajaId={1},@FechaCierre={2}",
+                    id, cajaAbierta.CajaId,DateTime.Now
                 );
 
                 return Json(new { success = true });

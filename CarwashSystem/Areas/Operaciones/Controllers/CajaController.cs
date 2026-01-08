@@ -117,7 +117,7 @@ namespace UI.Areas.Operaciones.Controllers
                 .FirstOrDefaultAsync();
 
             var movimientos = await _context.CajaMovimiento
-                .Where(m => m.CajaId == caja.CajaId)
+                .Where(m => m.CajaId == caja.CajaId && m.Fecha.Date >= caja.FechaApertura.Date)
                 .OrderBy(m => m.Fecha)
                 .ToListAsync();
 
