@@ -1,29 +1,30 @@
+# =========================
+# Runtime
+# =========================
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
+
+# ASP.NET escucha aquí SIEMPRE
 EXPOSE 8080
-EXPOSE 8082
 
-
-# Build stage
+# =========================
+# Build
+# =========================
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copiar solo el csproj y restaurar dependencias
 COPY ["UI.csproj", "./"]
 RUN dotnet restore "UI.csproj"
 
-# Copiar todo el proyecto y compilar
 COPY . .
-RUN dotnet build "UI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet publish "UI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Publish stage
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "UI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-# Final stage
+# =========================
+# Final
+# =========================
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
+
+# NO forzamos URLs aquí
 ENTRYPOINT ["dotnet", "UI.dll"]
