@@ -8,9 +8,8 @@ namespace UI.Areas.Operaciones.Controllers
     public class LavadosController : BaseController
     {
 
-        public LavadosController(CarwashSystemContext context): base(context)
+        public LavadosController(CarwashSystemContext context) : base(context)
         {
-
         }
 
         // Listar lavados pendientes usando la vista
@@ -88,7 +87,6 @@ namespace UI.Areas.Operaciones.Controllers
             if (model.LavadoId == 0 || model.ServicioId == 0)
                 return Json(new { success = false, message = "Datos incompletos" });
 
-            // Validar que no exista el servicio en el lavado
             var existe = await _context.LavadoServicios
                 .AnyAsync(ls => ls.LavadoId == model.LavadoId && ls.ServicioId == model.ServicioId);
             if (existe)
@@ -97,6 +95,40 @@ namespace UI.Areas.Operaciones.Controllers
             _context.LavadoServicios.Add(model);
             await _context.SaveChangesAsync();
             return Json(new { success = true });
+        }
+
+        // NUEVO: agregar varios servicios en un solo request
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AgregarServiciosMasivo(int lavadoId, int[] servicioIds)
+        {
+            if (lavadoId <= 0)
+                return Json(new { success = false, message = "Lavado inválido." });
+
+            if (servicioIds == null || servicioIds.Length == 0)
+                return Json(new { success = false, message = "Selecciona al menos un servicio." });
+
+            var existentes = await _context.LavadoServicios
+                .Where(ls => ls.LavadoId == lavadoId && servicioIds.Contains(ls.ServicioId))
+                .Select(ls => ls.ServicioId)
+                .ToListAsync();
+
+            var nuevosIds = servicioIds.Except(existentes).ToArray();
+            if (nuevosIds.Length == 0)
+                return Json(new { success = false, message = "Todos los servicios seleccionados ya estaban agregados." });
+
+            foreach (var sid in nuevosIds)
+            {
+                _context.LavadoServicios.Add(new LavadoServicios
+                {
+                    LavadoId = lavadoId,
+                    ServicioId = sid,
+                    Precio = null
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, added = nuevosIds.Length, skipped = existentes.Count });
         }
 
         // Editar precio de servicio
@@ -110,8 +142,50 @@ namespace UI.Areas.Operaciones.Controllers
             return Json(new { success = true });
         }
 
-        // Completar lavado
+        // NUEVO: guardar precios en lote (un solo botón)
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuardarPreciosMasivo([FromBody] GuardarPreciosMasivoRequest request)
+        {
+            if (request == null)
+                return Json(new { success = false, message = "Request inválido." });
+
+            if (request.LavadoId <= 0)
+                return Json(new { success = false, message = "Lavado inválido." });
+
+            if (request.Precios == null || request.Precios.Count == 0)
+                return Json(new { success = false, message = "No hay precios para guardar." });
+
+            var ids = request.Precios.Select(p => p.Id).ToArray();
+
+            var detalles = await _context.LavadoServicios
+                .Where(ls => ls.LavadoId == request.LavadoId && ids.Contains(ls.Id))
+                .ToListAsync();
+
+            foreach (var upd in request.Precios)
+            {
+                var det = detalles.FirstOrDefault(d => d.Id == upd.Id);
+                if (det == null) continue;
+                det.Precio = upd.Precio;
+            }
+
+            await _context.SaveChangesAsync();
+            return Json(new { success = true });
+        }
+
+        public class GuardarPreciosMasivoRequest
+        {
+            public int LavadoId { get; set; }
+            public List<PrecioUpdateDto> Precios { get; set; } = new();
+        }
+
+        public class PrecioUpdateDto
+        {
+            public int Id { get; set; }
+            public decimal Precio { get; set; }
+        }
+
+        // Completar lavado
         [HttpPost]
         public async Task<IActionResult> Completar(int id)
         {
@@ -127,7 +201,7 @@ namespace UI.Areas.Operaciones.Controllers
             {
                 await _context.Database.ExecuteSqlRawAsync(
                     "EXEC op.sp_CompletarLavado @LavadoId={0}, @CajaId={1},@FechaCierre={2}",
-                    id, cajaAbierta.CajaId,DateTime.Now
+                    id, cajaAbierta.CajaId, DateTime.Now
                 );
 
                 return Json(new { success = true });

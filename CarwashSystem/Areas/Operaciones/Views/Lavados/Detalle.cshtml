@@ -10,131 +10,144 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
 
 <div class="container py-4">
-    <h2 class="fw-bold text-info mb-3"><i class="bi bi-droplet"></i> Detalle de Lavado</h2>
-    <div class="row mb-2">
-        <div class="col-md-3"><b>Placa:</b> @Model.Placa</div>
-        <div class="col-md-3"><b>Tipo:</b> @Model.TipoVehiculo</div>
-        <div class="col-md-3"><b>Marca:</b> @Model.Marca</div>
-        <div class="col-md-3"><b>Modelo:</b> @Model.Modelo</div>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="fw-bold text-info mb-0"><i class="bi bi-droplet"></i> Detalle de Lavado</h2>
+        <a class="btn btn-outline-secondary rounded-pill" href="@Url.Action("Index", "Lavados", new { area = "Operaciones" })">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
     </div>
-    <div class="mb-2"><b>Fecha:</b> @Model.FechaRegistro.ToString("g")</div>
-    <hr />
-    <h5>Servicios</h5>
-    @if (esPendiente && serviciosDisponibles.Any())
-    {
-        <form id="formAgregarServicio" method="post" action="@Url.Action("AgregarServicio")" class="mb-3">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="LavadoId" value="@Model.Id" />
-            <div class="row g-2 align-items-end">
-                <div class="col-auto">
-                    <select class="form-control rounded-pill" name="ServicioId" required>
-                        <option value="">Agregar servicio...</option>
-                        @foreach (var s in serviciosDisponibles)
-                        {
-                            <option value="@s.Id">@s.Nombre</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-success btn-sm rounded-pill">
-                        <i class="bi bi-plus-circle"></i> Agregar
-                    </button>
-                </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-3">
+        <div class="card-body">
+            <div class="row g-2">
+                <div class="col-md-3"><b>Placa:</b> @Model.Placa</div>
+                <div class="col-md-3"><b>Tipo:</b> @Model.TipoVehiculo</div>
+                <div class="col-md-3"><b>Marca:</b> @Model.Marca</div>
+                <div class="col-md-3"><b>Modelo:</b> @Model.Modelo</div>
+                <div class="col-12 text-muted mt-1"><b>Fecha:</b> @Model.FechaRegistro.ToString("g")</div>
             </div>
-        </form>
-    }
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Servicio</th>
-                <th>Precio</th>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+                <h5 class="mb-0">Servicios</h5>
+
                 @if (esPendiente)
                 {
-                    <th>Acciones</th>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary btn-sm rounded-pill" id="btnGuardarTodo">
+                            <i class="bi bi-save2"></i> Guardar todos
+                        </button>
+                    </div>
                 }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var s in serviciosLavado)
+            </div>
+
+            @if (esPendiente && serviciosDisponibles.Any())
             {
-                <tr>
-                    <td>@s.Servicio?.Nombre</td>
-                    <td>
-                        @if (esPendiente)
-                        {
-                            <input type="number" class="form-control form-control-sm precio-servicio" data-id="@s.Id" value="@(s.Precio ?? 0)" min="0" step="0.01" />
-                        }
-                        else
-                        {
-                            @s.Precio?.ToString("C")
-                        }
-                    </td>
-                    @if (esPendiente)
-                    {
-                        <td>
-                            <button class="btn btn-outline-primary btn-sm btnGuardarPrecio" data-id="@s.Id">
-                                <i class="bi bi-save"></i> Guardar
+                <form id="formAgregarServiciosMasivo" method="post" action="@Url.Action("AgregarServiciosMasivo")" class="mb-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="lavadoId" value="@Model.Id" />
+
+                    <div class="row g-2 align-items-end">
+                        <div class="col-12 col-lg-8">
+                            <label class="form-label mb-1">Agregar servicios (puedes seleccionar varios)</label>
+                            <select class="form-select" name="servicioIds" multiple size="6" required>
+                                @foreach (var s in serviciosDisponibles)
+                                {
+                                    <option value="@s.Id">@s.Nombre</option>
+                                }
+                            </select>
+                            <div class="form-text">
+                                Tip: usa Ctrl/Shift para seleccionar múltiples.
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-4 d-grid">
+                            <button type="submit" class="btn btn-success rounded-pill">
+                                <i class="bi bi-plus-circle"></i> Agregar seleccionados
                             </button>
-                        </td>
-                    }
-                </tr>
+                        </div>
+                    </div>
+                </form>
             }
-        </tbody>
-    </table>
-    <hr />
-    <div class="mb-2"><b>Total:</b> <span id="totalLavado">@serviciosLavado.Sum(x => x.Precio ?? 0).ToString("C")</span></div>
-    @if (esPendiente)
-    {
-        <button class="btn btn-success rounded-pill" id="btnCompletar" data-id="@Model.Id">
-            <i class="bi bi-check-circle"></i> Completar Lavado
-        </button>
-    }
-    else
-    {
-        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Completado</span>
-        <div class="mt-2"><b>Fecha cierre:</b> @Model.FechaCierre?.ToString("g")</div>
-    }
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Servicio</th>
+                            <th style="width:220px;">Precio</th>
+                            @if (esPendiente)
+                            {
+                                <th style="width:170px;">Estado</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in serviciosLavado)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@s.Servicio?.Nombre</div>
+                                </td>
+                                <td>
+                                    @if (esPendiente)
+                                    {
+                                        <input type="number"
+                                               class="form-control form-control-sm precio-servicio"
+                                               data-id="@s.Id"
+                                               value="@(s.Precio ?? 0)"
+                                               min="0"
+                                               step="0.01" />
+                                    }
+                                    else
+                                    {
+                                        @s.Precio?.ToString("C")
+                                    }
+                                </td>
+
+                                @if (esPendiente)
+                                {
+                                    <td>
+                                        <span class="badge bg-secondary estado-linea" data-id="@s.Id">Sin guardar</span>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <hr class="my-3" />
+
+            <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+                <div class="fs-5">
+                    <b>Total:</b> <span id="totalLavado">@serviciosLavado.Sum(x => x.Precio ?? 0).ToString("C")</span>
+                </div>
+
+                @if (esPendiente)
+                {
+                    <button class="btn btn-success rounded-pill" id="btnCompletar" data-id="@Model.Id">
+                        <i class="bi bi-check-circle"></i> Completar Lavado
+                    </button>
+                }
+                else
+                {
+                    <div>
+                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Completado</span>
+                        <div class="text-muted mt-1"><b>Fecha cierre:</b> @Model.FechaCierre?.ToString("g")</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
     <script>
-
-        // Agregar servicio
-        $('#formAgregarServicio').submit(function (e) {
-            e.preventDefault();
-            var form = $(this);
-            var url = form.attr('action');
-            $.post(url, form.serialize(), function (result) {
-                if (result.success) {
-                    Swal.fire('Servicio agregado', '', 'success').then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire('Error', result.message, 'error');
-                }
-            });
-        });
-
-        // Guardar precio y actualizar total dinámicamente
-        $('.btnGuardarPrecio').click(function () {
-            var id = $(this).data('id');
-            var precio = $('.precio-servicio[data-id="' + id + '"]').val();
-            $.post('@Url.Action("EditarPrecio")', { id: id, precio: precio }, function (result) {
-                if (result.success) {
-                    Swal.fire('Precio actualizado', '', 'success');
-                    calcularTotal();
-                } else {
-                    Swal.fire('Error', result.message, 'error');
-                }
-            });
-        });
-
-        $('.precio-servicio').on('input', function () {
-            calcularTotal();
-        });
-
         function calcularTotal() {
             var total = 0;
             $('.precio-servicio').each(function () {
@@ -143,6 +156,79 @@
             });
             $('#totalLavado').text(total.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }));
         }
+
+        function setFilaDirty(id, dirty) {
+            var $badge = $('.estado-linea[data-id="' + id + '"]');
+            if (!$badge.length) return;
+
+            if (dirty) {
+                $badge.removeClass('bg-success').addClass('bg-warning text-dark').text('Pendiente');
+            } else {
+                $badge.removeClass('bg-warning text-dark').addClass('bg-success').text('Guardado');
+            }
+        }
+
+        // Agregar servicios (masivo)
+        $('#formAgregarServiciosMasivo').submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+
+            $.post(url, form.serialize(), function (result) {
+                if (result.success) {
+                    var msg = 'Agregados: ' + (result.added ?? 0) + (result.skipped ? (' | Ya existentes: ' + result.skipped) : '');
+                    Swal.fire('Servicios agregados', msg, 'success').then(() => location.reload());
+                } else {
+                    Swal.fire('Error', result.message, 'error');
+                }
+            });
+        });
+
+        // Marcar fila como "pendiente" cuando se edita el precio
+        $('.precio-servicio').on('input', function () {
+            var id = $(this).data('id');
+            setFilaDirty(id, true);
+            calcularTotal();
+        });
+
+        // Guardar todos los precios en un request
+           $('#btnGuardarTodo').click(function () {
+            var request = {
+                lavadoId: @Model.Id,
+                precios: []
+            };
+
+            $('.precio-servicio').each(function () {
+                var id = $(this).data('id');
+                var precio = parseFloat($(this).val());
+                if (isNaN(precio) || precio < 0) precio = 0;
+                request.precios.push({ id: id, precio: precio });
+            });
+
+            $.ajax({
+                url: '@Url.Action("GuardarPreciosMasivo")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(request),
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (result) {
+                    if (result.success) {
+                        Swal.fire('Precios guardados', '', 'success');
+                        $('.precio-servicio').each(function () {
+                            setFilaDirty($(this).data('id'), false);
+                        });
+                        calcularTotal();
+                    } else {
+                        Swal.fire('Error', result.message, 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'No se pudieron guardar los precios.', 'error');
+                }
+            });
+        });
 
         $('#btnCompletar').click(function () {
             var id = $(this).data('id');
