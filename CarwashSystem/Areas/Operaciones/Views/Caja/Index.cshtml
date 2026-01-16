@@ -6,7 +6,7 @@
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-@section Styles{
+@section Styles {
     <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 }
 
@@ -105,35 +105,44 @@
             });
         });
 
-        // Cerrar caja
+        // Cerrar caja (mostrando monto esperado)
         $('#btnCierre').click(function () {
-            Swal.fire({
-                title: 'Cerrar caja',
-                text: '¿Deseas cerrar la caja?',
-                input: 'number',
-                inputLabel: 'Monto final contado',
-                inputAttributes: { min: 0, step: 0.01 },
-                showCancelButton: true,
-                confirmButtonText: 'Cerrar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    $.post('@Url.Action("Cierre")', { montoCierre: result.value }, function (r) {
-                        if (r.success) location.reload();
-                        else Swal.fire('Error', r.message, 'error');
-                    });
+            $.get('@Url.Action("MontoSugeridoCierre")', function (info) {
+                if (!info.success) {
+                    Swal.fire('Error', info.message, 'error');
+                    return;
                 }
+
+                const montoEsperado = Number(info.montoEsperado || 0);
+
+                Swal.fire({
+                    title: 'Cerrar caja',
+                    html: `Monto esperado para cerrar: <strong>${montoEsperado.toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</strong>`,
+                    input: 'number',
+                    inputLabel: 'Monto final contado',
+                    inputAttributes: { min: 0, step: 0.01 },
+                    showCancelButton: true,
+                    confirmButtonText: 'Cerrar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed && result.value) {
+                        $.post('@Url.Action("Cierre")', { montoCierre: result.value }, function (r) {
+                            if (r.success) location.reload();
+                            else Swal.fire('Error', r.message, 'error');
+                        });
+                    }
+                });
             });
         });
 
         // Cargar movimientos
         @if (Model != null)
         {
-                <text>
-                $(function () {
-                    $('#movimientosCaja').load('@Url.Action("Movimientos")');
-                });
-                </text>
+                    <text>
+                    $(function () {
+                        $('#movimientosCaja').load('@Url.Action("Movimientos")');
+                    });
+                    </text>
         }
     </script>
 }

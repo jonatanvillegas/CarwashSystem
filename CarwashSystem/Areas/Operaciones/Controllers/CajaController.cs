@@ -33,6 +33,29 @@ namespace UI.Areas.Operaciones.Controllers
             return View(caja);
         }
 
+        // GET: Monto sugerido para cierre (monto esperado)
+        [HttpGet]
+        public async Task<IActionResult> MontoSugeridoCierre()
+        {
+            var userId = _userManager.GetUserId(User);
+            var caja = await _context.Caja
+                .Where(c => c.UsuarioId == userId && c.Estado == "ABIERTA")
+                .OrderByDescending(c => c.CajaId)
+                .FirstOrDefaultAsync();
+
+            if (caja == null)
+                return Json(new { success = false, message = "No hay caja abierta." });
+
+            var totalIngresos = caja.TotalLavados + caja.TotalVentas;
+            var montoEsperado = caja.MontoInicial + totalIngresos;
+
+            return Json(new
+            {
+                success = true,
+                montoEsperado
+            });
+        }
+
         // GET: Apertura de caja
         public IActionResult Apertura()
         {
