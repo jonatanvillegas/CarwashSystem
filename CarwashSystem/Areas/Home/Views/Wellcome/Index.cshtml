@@ -14,7 +14,7 @@
                     <div class="card shadow-sm border-0 rounded-4 text-center h-100 bg-info bg-opacity-10">
                         <div class="card-body">
                             <i class="bi bi-droplet fs-1 text-info"></i>
-                            <h5 class="mt-2 mb-1 fw-bold">@Model.LavadosHoy?.ToString("C")</h5>
+                            <h5 class="mt-2 mb-1 fw-bold">@Model.LavadosHoy?.ToString("N")</h5>
                             <div class="text-secondary">Lavados Hoy</div>
                         </div>
                     </div>
@@ -23,7 +23,7 @@
                     <div class="card shadow-sm border-0 rounded-4 text-center h-100 bg-warning bg-opacity-10">
                         <div class="card-body">
                             <i class="bi bi-basket fs-1 text-warning"></i>
-                            <h5 class="mt-2 mb-1 fw-bold">@Model.VentasHoy?.ToString("C")</h5>
+                            <h5 class="mt-2 mb-1 fw-bold">@Model.VentasHoy?.ToString("N")</h5>
                             <div class="text-secondary">Ventas Snacks Hoy</div>
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                     <div class="card shadow-sm border-0 rounded-4 text-center h-100 bg-success bg-opacity-10">
                         <div class="card-body">
                             <i class="bi bi-currency-dollar fs-1 text-success"></i>
-                            <h5 class="mt-2 mb-1 fw-bold">@Model.IngresosHoy?.ToString("C")</h5>
+                            <h5 class="mt-2 mb-1 fw-bold">@Model.IngresosHoy?.ToString("N")</h5>
                             <div class="text-secondary">Ingresos del Día</div>
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                     <div class="card shadow-sm border-0 rounded-4 text-center h-100 @(Model.CajaAbierta.Value ? "bg-primary bg-opacity-10" : "bg-secondary bg-opacity-10")">
                         <div class="card-body">
                             <i class="bi bi-cash-stack fs-1 @(Model.CajaAbierta.Value ? "text-primary" : "text-secondary")"></i>
-                            <h5 class="mt-2 mb-1 fw-bold">@Model.TotalCaja?.ToString("C")</h5>
+                            <h5 class="mt-2 mb-1 fw-bold">@Model.TotalCaja?.ToString("N")</h5>
                             <div class="text-secondary">Caja @(Model.CajaAbierta.Value ? "Abierta" : "Cerrada")</div>
                         </div>
                     </div>

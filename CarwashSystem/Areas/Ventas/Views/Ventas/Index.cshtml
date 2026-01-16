@@ -23,7 +23,7 @@
                         <div class="card shadow-sm border-0 rounded-4 h-100 producto-card" data-id="@p.Id" data-nombre="@p.Nombre" data-precio="@p.Precio">
                             <div class="card-body text-center">
                                 <h6 class="card-title text-warning"><i class="bi bi-basket"></i> @p.Nombre</h6>
-                                <div class="mb-2"><b>Precio:</b> @p.Precio.ToString("C")</div>
+                                <div class="mb-2"><b>Precio:</b> @p.Precio.ToString("N")</div>
                                 <button class="btn btn-outline-warning btn-sm rounded-pill btnAgregar" @(cajaAbierta ? "" : "disabled")>
                                     <i class="bi bi-plus-circle"></i> Agregar
                                 </button>
