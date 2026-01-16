@@ -1,4 +1,6 @@
-﻿@model UI.Models.Lavados_View
+﻿@using UI.Services.Clock
+@model UI.Models.Lavados_View
+@inject IClock Clock
 @{
     var serviciosLavado = ViewBag.Servicios as List<UI.Models.LavadoServicios>;
     var catalogo = ViewBag.ServiciosCatalogo as List<UI.Models.Servicios>;
@@ -24,7 +26,7 @@
                 <div class="col-md-3"><b>Tipo:</b> @Model.TipoVehiculo</div>
                 <div class="col-md-3"><b>Marca:</b> @Model.Marca</div>
                 <div class="col-md-3"><b>Modelo:</b> @Model.Modelo</div>
-                <div class="col-12 text-muted mt-1"><b>Fecha:</b> @Model.FechaRegistro.ToString("g")</div>
+                <div class="col-12 text-muted mt-1"><b>Fecha:</b>@Clock.ToNi(Model.FechaRegistro).ToString("g")</div>
             </div>
         </div>
     </div>
@@ -136,7 +138,7 @@
                 {
                     <div>
                         <span class="badge bg-success"><i class="bi bi-check-circle"></i> Completado</span>
-                        <div class="text-muted mt-1"><b>Fecha cierre:</b> @Model.FechaCierre?.ToString("g")</div>
+                        <div class="text-muted mt-2"><b>Fecha cierre:</b> @(Model.FechaCierre is null ? "" : Clock.ToNi(Model.FechaCierre.Value).ToString("g"))</div>
                     </div>
                 }
             </div>

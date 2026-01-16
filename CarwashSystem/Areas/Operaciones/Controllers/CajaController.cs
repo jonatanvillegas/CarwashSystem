@@ -1,20 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UI.Models;
-using Microsoft.AspNetCore.Identity;
+using UI.Services.Clock;
 
 namespace UI.Areas.Operaciones.Controllers
 {
     [Area("Operaciones")]
     public class CajaController : Controller
     {
+        private readonly IClock _clock;
         private readonly CarwashSystemContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CajaController(CarwashSystemContext context, UserManager<IdentityUser> userManager)
+        public CajaController(CarwashSystemContext context, UserManager<IdentityUser> userManager, IClock clock)
         {
             _context = context;
             _userManager = userManager;
+            _clock = clock;
         }
 
         // GET: Estado actual de caja
@@ -47,7 +50,7 @@ namespace UI.Areas.Operaciones.Controllers
             {
                 caja = new Caja
                 {
-                    FechaApertura = DateTime.Now,
+                    FechaApertura = _clock.UtcNow,
                     MontoInicial = montoInicial,
                     UsuarioId = userId,
                     Estado = "ABIERTA",
@@ -58,7 +61,7 @@ namespace UI.Areas.Operaciones.Controllers
             }
             else if (caja.Estado == "CERRADA")
             {
-                caja.FechaApertura = DateTime.Now;
+                caja.FechaApertura = _clock.UtcNow;
                 caja.MontoInicial = montoInicial;
                 caja.Estado = "ABIERTA";
                 caja.FechaCierre = null;

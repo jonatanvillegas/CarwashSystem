@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using UI.Models;
 using UI.Services;
+using UI.Services.Clock;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,8 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
+
+builder.Services.AddSingleton<IClock, Clock>();
 
 builder.Services.AddAuthorization(options =>
 {

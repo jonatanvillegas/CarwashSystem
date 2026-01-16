@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UI.Models;
+using UI.Services.Clock;
 
 namespace UI.Areas.Operaciones.Controllers
 {
     [Area("Operaciones")]
     public class LavadosController : BaseController
     {
-
-        public LavadosController(CarwashSystemContext context) : base(context)
+        private readonly IClock _clock;
+        public LavadosController(CarwashSystemContext context,IClock clock) : base(context)
         {
+            _clock = clock;
         }
 
         // Listar lavados pendientes usando la vista
@@ -39,7 +41,7 @@ namespace UI.Areas.Operaciones.Controllers
             if (ModelState.IsValid && serviciosSeleccionados != null && serviciosSeleccionados.Length > 0)
             {
                 lavado.Estado = "PENDIENTE";
-                lavado.FechaRegistro = DateTime.Now;
+                lavado.FechaRegistro = _clock.UtcNow;
                 _context.Add(lavado);
                 await _context.SaveChangesAsync();
 
@@ -201,7 +203,7 @@ namespace UI.Areas.Operaciones.Controllers
             {
                 await _context.Database.ExecuteSqlRawAsync(
                     "EXEC op.sp_CompletarLavado @LavadoId={0}, @CajaId={1},@FechaCierre={2}",
-                    id, cajaAbierta.CajaId, DateTime.Now
+                    id, cajaAbierta.CajaId, _clock.UtcNow
                 );
 
                 return Json(new { success = true });
